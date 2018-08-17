@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Generated
-{
-
 #region --------------------------------------------- types
 
+namespace Generated
+{
+    
 /* Mutation argument types are missing for some reason (Methods, Responsibility, Notifications for SMAPI)
 
 {{#each types}}{{ name }}
@@ -14,9 +14,7 @@ namespace Generated
 
 */
 
-#endregion 
-
-#region --------------------------------------------- missing types
+// --------------------------------------------- missing types
 
 {{#each (getMuationArgumentTypes types)}}
 public partial class {{ this }}
@@ -24,7 +22,7 @@ public partial class {{ this }}
 }
 {{/each}}
 
-#endregion 
-
 }
+
+#endregion 
 
