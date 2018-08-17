@@ -16,7 +16,7 @@ We forked @netspective 's (Thanks dude!) project and changed it so the templates
 
 # CSharp template
 
-Experimental [GraphQL code generator](https://github.com/dotansimha/graphql-code-generator) template for C# projects using instructions provided [at this site](https://github.com/dotansimha/graphql-code-generator/blob/master/packages/templates/README.md). 
+[GraphQL code generator](https://github.com/dotansimha/graphql-code-generator) template for C# projects using instructions provided [at this site](https://github.com/dotansimha/graphql-code-generator/blob/master/packages/templates/README.md). 
 
 This template reads the *introspection JSON* of a GraphQL schema as an input. The user has to also mention the output folder where the file has to be written
 
