@@ -1,10 +1,8 @@
-{{ toCsharpComment description }}
-{{#if @root.config.enumsAsTypes }}
-public enum {{ name }} = {{#each values }}"{{ value }}"{{#unless @last}} | {{/unless}}{{/each}};
-{{else}}
-public enum {{ name }} {
+    {{ toCsharpComment description }}
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum {{ name }} 
+    {
 {{#each values }}
-  {{value}}{{#unless @last}}, {{/unless}}
+        {{value}}{{#unless @last}}, {{/unless}}
 {{/each}}
-}
-{{/if}}
+    }

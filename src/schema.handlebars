@@ -1,25 +1,35 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
-#region --------------------------------------------- types
+#region input types
 
 namespace Generated
 {
-    
-/* Mutation argument types are missing for some reason (Methods, Responsibility, Notifications for SMAPI)
 
-{{#each types}}{{ name }}
+// scalars if used 
+{{#each (getTypesIfUsed inputTypes scalars "scalars")}}
+    {{~> classes }}
+
 {{/each}}
 
-*/
+// types if used 
+{{#each (getTypesIfUsed inputTypes types)}}
+  {{~> classes }}
 
-// --------------------------------------------- missing types
+{{/each}}
 
-{{#each (getMuationArgumentTypes types)}}
-public partial class {{ this }}
-{
-}
+// input types
+{{#each inputTypes}}
+  {{~> classes }}
+
+{{/each}}
+
+// enums if used 
+{{#each (getTypesIfUsed inputTypes enums)}}
+  {{~> enumTemplate }}
+
 {{/each}}
 
 }

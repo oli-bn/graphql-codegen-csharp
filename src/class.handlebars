@@ -1,9 +1,11 @@
 
+
     {{ toCsharpComment description }}
     public class {{ name }}
     {
 {{#each fields}}
       {{ toCsharpComment description }}
+      [JsonProperty("{{ name }}")]
       public {{{ convertedType this }}} {{toPascalCase name }} { get; set; } 
 {{/each}}
     }
