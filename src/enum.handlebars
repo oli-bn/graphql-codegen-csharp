@@ -1,4 +1,5 @@
     {{ toCsharpComment description }}
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum {{ name }} 
     {
 {{#each values }}
