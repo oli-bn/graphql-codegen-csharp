@@ -6,9 +6,28 @@ using Newtonsoft.Json;
 
 namespace Generated
 {
-    
+
+// scalars if used 
+{{#each (getTypesIfUsed inputTypes scalars "scalars")}}
+    {{~> classes }}
+
+{{/each}}
+
+// types if used 
+{{#each (getTypesIfUsed inputTypes types)}}
+  {{~> classes }}
+
+{{/each}}
+
+// input types
 {{#each inputTypes}}
   {{~> classes }}
+
+{{/each}}
+
+// enums if used 
+{{#each (getTypesIfUsed inputTypes enums)}}
+  {{~> enumTemplate }}
 
 {{/each}}
 

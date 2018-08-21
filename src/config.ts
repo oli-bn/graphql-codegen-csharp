@@ -12,7 +12,7 @@ import {
   getOptionals,
   toCsharpComment, asQueryUnescapedText, asArgumentList, eq, asJsonString,
   isMutation,
-  getMuationArgumentTypes
+  getTypesIfUsed
   } from "./helpers/csharpSyntax";
 
 export const config: GeneratorConfig = {
@@ -21,6 +21,7 @@ export const config: GeneratorConfig = {
     index,
     classes,
     schema,
+    enumTemplate,
     documents,
     selectionSet,
     fragments,
@@ -42,7 +43,7 @@ export const config: GeneratorConfig = {
     eq,
     asJsonString,
     isMutation,
-    getMuationArgumentTypes,
+    getTypesIfUsed,
   },
   outFile: "Classes.cs",
   // filesExtension: 'cs',

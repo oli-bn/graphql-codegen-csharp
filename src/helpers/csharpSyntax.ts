@@ -14,7 +14,7 @@ export function toCsharpComment(text: string): SafeString {
 
 export function asQueryUnescapedText(text: string): SafeString {
 
-    if(text){
+    if(text) {
         return new SafeString(text.replace(/&#x3D;/g, "=").replace(/"/g, "\"\""));
     }
 
@@ -34,6 +34,14 @@ export function asArgumentList(variables: Variable[], options: any): string {
     return list;
 }
 
+const scalarTypeMapping : { [name: string]: string; } = {
+    "Long" : "long",
+    "BigDecimal" : "decimal",
+    "Float32Bit" : "float",
+    "LocalTime" : "DateTime",
+    "URI" : "Uri",
+};
+
 export function getType(type: any, options: any): string {
     if (!type) {
       return "object";
@@ -43,21 +51,10 @@ export function getType(type: any, options: any): string {
     if (type.isArray) {
       return `List<${realType}>`;
     } else {
-        if(realType === "Long") {
-            return "long";
-        }
-        if(realType === "BigDecimal") {
-            return "decimal";
-        }
-        if(realType === "Float32Bit") {
-            return "float";
-        }
-        if(realType === "LocalTime") {
-            return "DateTime";
-        }
+        var typeName: string = scalarTypeMapping[realType];
 
-        if(realType === "URI") {
-            return "Uri";
+        if(typeName !== undefined) {
+            return typeName;
         }
 
         return realType;
@@ -92,24 +89,34 @@ export function isMutation(typeName: String): Boolean {
     return typeName.lastIndexOf("Mutation") > -1;
 }
 
-export function getMuationArgumentTypes(classes: [any]): any {
+export function getTypesIfUsed(inputTypes: [any], classes: [any], typeName: string): any {
 
-    const names: [string] = classes.map(c => c.name) as [string];
-    const missingClasses: any[] = [];
+    const typeNameMap: { [name: string]: any; } = { };
+    const usedTypes: any[] = [];
 
     classes.forEach(c => {
+        var name: string = c.name;
+        if(typeNameMap[name] === undefined) {
+            typeNameMap[name] = c;
+        }
+    });
+
+    inputTypes.forEach(c => {
         if(c.fields) {
             c.fields.forEach(f => {
-                if(f.arguments) {
-                    f.arguments.forEach(a => {
-                        if(a.isScalar === false && names.indexOf(a.type) === -1 && missingClasses.indexOf(a.type) === -1) {
-                            missingClasses.push(a.type);
+                var type: any = typeNameMap[f.type];
+                if(type !== undefined && usedTypes.indexOf(type) === -1) {
+                    if(typeName === "scalars") {
+                        if(scalarTypeMapping[typeName] === undefined) {
+                            usedTypes.push(type);
                         }
-                    });
+                    } else {
+                        usedTypes.push(type);
+                    }
                 }
             });
         }
     });
 
-    return missingClasses;
+    return usedTypes;
 }
