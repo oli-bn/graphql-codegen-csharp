@@ -1,5 +1,6 @@
 import * as index from "./template.handlebars";
 import * as classes from "./class.handlebars";
+import * as structs from "./structs.handlebars";
 import * as interfaces from "./interface.handlebars";
 import * as schema from "./schema.handlebars";
 import * as documents from "./documents.handlebars";
@@ -25,6 +26,7 @@ export const config: GeneratorConfig = {
     documents,
     selectionSet,
     fragments,
+    structs
   },
   flattenTypes: true,
   primitives: {
