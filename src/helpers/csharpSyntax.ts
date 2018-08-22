@@ -46,6 +46,7 @@ export function getType(type: any, options: any): string {
     if (!type) {
       return "object";
     }
+
     const baseType: any = type.type;
     const realType: any = options.data.root.primitivesMap[baseType] || baseType;
     if (type.isArray) {
@@ -55,6 +56,10 @@ export function getType(type: any, options: any): string {
 
         if(typeName !== undefined) {
             return typeName;
+        }
+
+        if((type.isEnum || type.isScalar) && type.isRequired === false && realType !== "string") {
+            return `${realType}?`;
         }
 
         return realType;
