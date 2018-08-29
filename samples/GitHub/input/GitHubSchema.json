@@ -20672,16 +20672,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "SCALAR",
-          "name": "DateTime",
-          "description": "",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "OBJECT",
           "name": "Blob",
           "description": "Represents a Git blob.",
