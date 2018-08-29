@@ -39,7 +39,7 @@ const scalarTypeMapping : { [name: string]: string; } = {
     "BigDecimal" : "decimal",
     "Float32Bit" : "float",
     "LocalTime" : "DateTime",
-    "URI" : "Uri",
+    "URI" : "Uri"
 };
 
 export function getType(type: any, options: any): string {
@@ -112,7 +112,8 @@ export function getTypesIfUsed(inputTypes: [any], classes: [any], typeName: stri
                 var type: any = typeNameMap[f.type];
                 if(type !== undefined && usedTypes.indexOf(type) === -1) {
                     if(typeName === "scalars") {
-                        if(scalarTypeMapping[typeName] === undefined) {
+                        const csharpTypeName: string = scalarTypeMapping[f.type];
+                        if(csharpTypeName === undefined) {
                             usedTypes.push(type);
                         }
                     } else {
