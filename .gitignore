@@ -8,3 +8,4 @@ yarn-error.log
 /samples/GitHub/output/.vs
 /samples/GitHub/output/packages
 /samples/GitHub/output/OutTest/GitHubSchema.cs
+"site/" 
