@@ -11,7 +11,7 @@ import { EInputType, GeneratorConfig } from "graphql-codegen-core";
 import {
   getType,
   getOptionals,
-  toCsharpComment, asQueryUnescapedText, asArgumentList, eq, asJsonString,
+  toCsharpComment, asQueryUnescapedText, asArgumentList, converterIfNeeded, asJsonString,
   isMutation,
   getTypesIfUsed
   } from "./helpers/csharpSyntax";
@@ -42,10 +42,10 @@ export const config: GeneratorConfig = {
     toCsharpComment,
     asQueryUnescapedText,
     asArgumentList,
-    eq,
     asJsonString,
     isMutation,
     getTypesIfUsed,
+    converterIfNeeded,
   },
   outFile: "Classes.cs",
   // filesExtension: 'cs',
