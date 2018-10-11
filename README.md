@@ -5,3 +5,6 @@
 # CSharp Generator for Queries
 
 https://agoda-com.github.io/graphql-codegen-csharp/
+
+
+![](https://agoda-com.github.io/graphql-codegen-csharp/img/mkdocs.png)
