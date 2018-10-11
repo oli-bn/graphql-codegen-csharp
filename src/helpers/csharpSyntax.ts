@@ -1,9 +1,19 @@
 import { SafeString } from "handlebars";
 import { Variable, Type, Field } from "graphql-codegen-core";
 
-export function eq(text: any, otherText: any): boolean {
-    return text === otherText;
-}
+const scalarTypeMapping : { [name: string]: string; } = {
+    "Date" : "DateTime",
+    "DateTime" : "DateTime",
+    "Long" : "long",
+    "BigDecimal" : "decimal",
+    "Float32Bit" : "float",
+    "LocalTime" : "DateTime",
+    "URI" : "Uri"
+};
+
+const typeConverterMapping : { [name: string]: string; } = {
+    "Date" : ".ToString(\"yyyy-MM-dd\")",
+};
 
 export function toCsharpComment(text: string): SafeString {
     if(text === undefined || text === null || text === "") {
@@ -21,11 +31,24 @@ export function asQueryUnescapedText(text: string): SafeString {
     return new SafeString("");
 }
 
+export function converterIfNeeded(variable: Variable): string {
+    const converter: string = typeConverterMapping[variable.type];
+
+    if(converter === undefined) {
+        return "";
+    }
+
+    return converter;
+}
+
 export function asArgumentList(variables: Variable[], options: any): string {
     var list: string = "";
     for(let i: number = 0; i < variables.length; i++) {
         var variable: any = variables[i];
         var typeName: string = getType(variable, options) || "object";
+
+        console.log(typeName);
+
         list += `${typeName} ${variable.name}`;
         if(i < variables.length - 1) {
             list += ", ";
@@ -33,14 +56,6 @@ export function asArgumentList(variables: Variable[], options: any): string {
     }
     return list;
 }
-
-const scalarTypeMapping : { [name: string]: string; } = {
-    "Long" : "long",
-    "BigDecimal" : "decimal",
-    "Float32Bit" : "float",
-    "LocalTime" : "DateTime",
-    "URI" : "Uri"
-};
 
 export function getType(type: any, options: any): string {
     if (!type) {

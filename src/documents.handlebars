@@ -6,6 +6,15 @@
 
 namespace Generated
 {
+    public class DateFormatConverter : IsoDateTimeConverter
+    {
+        public DateFormatConverter(string format)
+        {
+            DateTimeFormat = format;
+        }
+    }
+
+
     public interface IQuery
     {
         string GetQueryText();
@@ -37,7 +46,7 @@ namespace Generated.{{ toPascalCase name }}
       {{/each}}
         }
         
-        {{#each variables}}
+        {{#each variables}}       
         public {{{ convertedType this }}} {{ toPascalCase name }} { get; }
         {{/each}}
 
@@ -47,7 +56,7 @@ namespace Generated.{{ toPascalCase name }}
             {
                 query = @"{{asQueryUnescapedText document}}",
                 variables = new {
-{{#each variables}}                        {{ name }} = {{ toPascalCase name }},
+{{#each variables}}                        {{ name }} = {{ toPascalCase name }}{{{ converterIfNeeded this }}},
 {{/each}}
                     }
                 });
