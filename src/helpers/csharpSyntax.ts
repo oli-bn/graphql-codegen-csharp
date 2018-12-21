@@ -6,6 +6,7 @@ const scalarTypeMapping : { [name: string]: string; } = {
     "DateTime" : "DateTime",
     "Long" : "long",
     "BigDecimal" : "decimal",
+    "Float": "float",
     "Float32Bit" : "float",
     "LocalTime" : "DateTime",
     "URI" : "Uri"
@@ -46,9 +47,6 @@ export function asArgumentList(variables: Variable[], options: any): string {
     for(let i: number = 0; i < variables.length; i++) {
         var variable: any = variables[i];
         var typeName: string = getType(variable, options) || "object";
-
-        console.log(typeName);
-
         list += `${typeName} ${variable.name}`;
         if(i < variables.length - 1) {
             list += ", ";
@@ -58,26 +56,38 @@ export function asArgumentList(variables: Variable[], options: any): string {
 }
 
 export function getType(type: any, options: any): string {
+
     if (!type) {
       return "object";
     }
 
     const baseType: any = type.type;
-    const realType: any = options.data.root.primitivesMap[baseType] || baseType;
+    let isValueType: boolean = type.isScalar;
+    let realType: any = baseType;
+
+    if(options.data.root.primitivesMap[baseType] !== undefined) {
+        realType = options.data.root.primitivesMap[baseType];
+        isValueType = realType !== "string";
+    }
+
     if (type.isArray) {
       return `List<${realType}>`;
     } else {
-        var typeName: string = scalarTypeMapping[realType];
-
-        if(typeName !== undefined) {
-            return typeName;
+        let typeName: string = scalarTypeMapping[baseType];
+        if(typeName === undefined) {
+            typeName = scalarTypeMapping[realType];
+        }
+        if(typeName === undefined) {
+            typeName = realType;
+        } else {
+            isValueType = true;
         }
 
-        if((type.isEnum || type.isScalar) && type.isRequired === false && realType !== "string") {
-            return `${realType}?`;
+        const isNullable: boolean = isValueType === true && type.isRequired !== true;
+        if(typeName === "float") {
+            console.log(isValueType + " ..." + type.name + " ..." + type.isRequired);
         }
-
-        return realType;
+        return isNullable === true ? `${typeName}?` : typeName;
     }
 }
 
