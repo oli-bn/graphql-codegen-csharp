@@ -84,9 +84,6 @@ export function getType(type: any, options: any): string {
         }
 
         const isNullable: boolean = isValueType === true && type.isRequired !== true;
-        if(typeName === "float") {
-            console.log(isValueType + " ..." + type.name + " ..." + type.isRequired);
-        }
         return isNullable === true ? `${typeName}?` : typeName;
     }
 }
