@@ -1,7 +1,7 @@
 
 
     {{ toCsharpComment description }}
-    public class {{ name }}
+    public class {{ toPascalCase name }}
     {
 {{#each fields}}
       {{ toCsharpComment description }}
