@@ -14,6 +14,51 @@ namespace Generated
         }
     }
 
+    public class Error
+    {
+        [JsonProperty("message")]
+        public string Message { get; set; }
+
+        [JsonProperty("locations")]
+        public Location[] Locations { get; set; }
+
+        [JsonProperty("validationErrorType")]
+        public string ValidationErrorType { get; set; }
+
+        [JsonProperty("errorType")]
+        public string ErrorType { get; set; }
+    }
+
+    public class Location 
+    {
+        [JsonProperty("line")]
+        public int? Line { get; set; }
+
+        [JsonProperty("column")]
+        public int? Column { get; set; }
+    }
+
+    public class QueryInvocationException : Exception
+    {
+        public QueryInvocationException(string message, Error[] errors) : base(message)
+        {
+            Errors = errors;
+        }
+
+        public Error[] Errors { get; }
+    }
+
+    public sealed class Result<T> 
+    {
+        [JsonProperty("data")]
+        public T Data { get; set; }
+
+        [JsonProperty("error")]
+        public string Error { get; set; }
+
+        [JsonProperty("errors")]
+        public Error[] Errors { get; set; }
+    }
 
     public interface IQuery
     {
@@ -64,7 +109,14 @@ namespace Generated.{{ toPascalCase name }}
 
             public virtual Data GetParsedObject(string jsonText)
             {
-                return JsonConvert.DeserializeObject<Result>(jsonText).Data;
+                var result = JsonConvert.DeserializeObject<Result<Data>>(jsonText);
+
+                if (result.Error != null || result.Errors != null)
+                {
+                    throw new QueryInvocationException(result.Error ?? "Query Invocation Error", result.Errors ?? new Error[0]);
+                }
+                
+                return result.Data;
             }
 
             string IQuery.GetQueryText()
@@ -81,12 +133,6 @@ namespace Generated.{{ toPascalCase name }}
             {
                 return GetParsedObject(jsonText);
             }
-        }
-
-        public sealed class Result
-        {
-            [JsonProperty("data")]
-            public Data Data { get; set; }
         }
 
         public sealed class Data
