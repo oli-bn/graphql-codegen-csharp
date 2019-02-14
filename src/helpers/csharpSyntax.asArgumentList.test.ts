@@ -64,28 +64,28 @@ test("list of nullable known primitives tests", () => {
     ] as Variable[], options)).toBe("int a, bool? b, long? c, float? d");
 });
 
-/*
+test("list of scalar, non scalar tests", () => {
+    expect(asArgumentList([
+        { name: "a", type: "exotic", isRequired: true, isScalar: true }
+    ] as Variable[], options)).toBe("exotic a");
 
-test("scalar, non scalar tests", () => {
-    expect(getType({ type: "exotic", isRequired: true, isScalar: true } as Variable, options)).toBe("exotic");
-    expect(getType({ type: "exotic", isRequired: false, isScalar: true } as Variable, options)).toBe("exotic?");
-    expect(getType({ type: "exotic", isRequired: true, isScalar: false } as Variable, options)).toBe("exotic");
-    expect(getType({ type: "exotic", isRequired: false, isScalar: false } as Variable, options)).toBe("exotic");
-    expect(getType({ type: "Exotic", isRequired: true, isScalar: true } as Variable, options)).toBe("Exotic");
-    expect(getType({ type: "Exotic", isRequired: false, isScalar: true } as Variable, options)).toBe("Exotic?");
-    expect(getType({ type: "Exotic", isRequired: true, isScalar: false } as Variable, options)).toBe("Exotic");
-    expect(getType({ type: "Exotic", isRequired: false, isScalar: false } as Variable, options)).toBe("Exotic");
+    expect(asArgumentList([
+        { name: "a", type: "exotic", isRequired: false, isScalar: true },
+        { name: "b", type: "blah", isRequired: false, isScalar: false },
+        { name: "c", type: "Blah", isRequired: false, isScalar: false },
+        { name: "d", type: "Exotic", isRequired: false, isScalar: true },
+    ] as Variable[], options)).toBe("exotic? a, blah b, Blah c, Exotic? d");
 });
 
-test("array tests", () => {
-    expect(getType({ type: "Int", isRequired: true, isArray: true } as Variable, options)).toBe("List<int>");
-    expect(getType({ type: "DateTime", isRequired: true, isArray: true } as Variable, options)).toBe("List<DateTime>");
-    expect(getType({ type: "Int", isRequired: false, isArray: true } as Variable, options)).toBe("List<int?>");
-    expect(getType({ type: "DateTime", isRequired: false, isArray: true } as Variable, options)).toBe("List<DateTime?>");
-    expect(getType({ type: "exotic", isRequired: true, isArray: true, isScalar: true } as Variable, options)).toBe("List<exotic>");
-    expect(getType({ type: "exotic", isRequired: false, isArray: true, isScalar: true } as Variable, options)).toBe("List<exotic?>");
-    expect(getType({ type: "Exotic", isRequired: true, isArray: true, isScalar: true } as Variable, options)).toBe("List<Exotic>");
-    expect(getType({ type: "Exotic", isRequired: false, isArray: true, isScalar: true } as Variable, options)).toBe("List<Exotic?>");
-});
+test("list of array tests", () => {
+    expect(asArgumentList([
+        { name: "a", type: "Int", isRequired: true, isArray: true },
+    ] as Variable[], options)).toBe("List<int> a");
 
-*/
+    expect(asArgumentList([
+        { name: "a", type: "Int", isRequired: false, isArray: true },
+        { name: "b", type: "DateTime", isRequired: true, isArray: true },
+        { name: "c", type: "exotic", isRequired: true, isArray: true, isScalar: true },
+        { name: "d", type: "Exotic", isRequired: false, isArray: true, isScalar: true },
+    ] as Variable[], options)).toBe("List<int?> a, List<DateTime> b, List<exotic> c, List<Exotic?> d");
+});
