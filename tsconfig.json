@@ -12,5 +12,5 @@
     "declaration": true,
     "outDir": "./dist/"
   },
-  "exclude": ["node_modules", "tests", "dist"]
+  "exclude": ["node_modules", "tests", "dist", "./**/*.test.ts"]
 }

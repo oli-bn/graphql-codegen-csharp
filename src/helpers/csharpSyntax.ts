@@ -44,8 +44,14 @@ export function converterIfNeeded(variable: Variable): string {
 
 export function asArgumentList(variables: Variable[], options: any): string {
     var list: string = "";
+    if(!variables) {
+        return list;
+    }
     for(let i: number = 0; i < variables.length; i++) {
-        var variable: any = variables[i];
+        var variable: Variable = variables[i];
+        if (!variable) {
+            continue;
+        }
         var typeName: string = getType(variable, options) || "object";
         list += `${typeName} ${variable.name}`;
         if(i < variables.length - 1) {
@@ -70,21 +76,22 @@ export function getType(type: any, options: any): string {
         isValueType = realType !== "string";
     }
 
-    if (type.isArray) {
-      return `List<${realType}>`;
-    } else {
-        let typeName: string = scalarTypeMapping[baseType];
-        if(typeName === undefined) {
-            typeName = scalarTypeMapping[realType];
-        }
-        if(typeName === undefined) {
-            typeName = realType;
-        } else {
-            isValueType = true;
-        }
+	let typeName: string = scalarTypeMapping[baseType];
+	if(typeName === undefined) {
+		typeName = scalarTypeMapping[realType];
+	}
+	if(typeName === undefined) {
+		typeName = realType;
+	} else {
+		isValueType = true;
+	}
 
-        const isNullable: boolean = isValueType === true && type.isRequired !== true;
-        return isNullable === true ? `${typeName}?` : typeName;
+	const isNullable: boolean = isValueType === true && type.isRequired !== true;
+
+    if (type.isArray) {
+        return isNullable ? `List<${typeName}?>` : `List<${typeName}>`;
+    } else {
+        return isNullable ? `${typeName}?` : typeName;
     }
 }
 
