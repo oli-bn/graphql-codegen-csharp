@@ -16,6 +16,18 @@ const typeConverterMapping : { [name: string]: string; } = {
     "Date" : ".ToString(\"yyyy-MM-dd\")",
 };
 
+export function toPascalCase(text: string): string {
+    return `${text}`
+    .replace(new RegExp(/[-_]+/, "g"), " ")
+    .replace(new RegExp(/[^\w\s]/, "g"), "")
+    .replace(
+        new RegExp(/\s+(.)(\w+)/, "g"),
+        ($1, $2, $3) => `${$2.toUpperCase() + $3.toLowerCase()}`
+        )
+        .replace(new RegExp(/\s/, "g"), "")
+        .replace(new RegExp(/\w/), s => s.toUpperCase());
+}
+
 export function toCsharpComment(text: string): SafeString {
     if(text === undefined || text === null || text === "") {
         return new SafeString("");
@@ -44,8 +56,14 @@ export function converterIfNeeded(variable: Variable): string {
 
 export function asArgumentList(variables: Variable[], options: any): string {
     var list: string = "";
+    if(!variables) {
+        return list;
+    }
     for(let i: number = 0; i < variables.length; i++) {
-        var variable: any = variables[i];
+        var variable: Variable = variables[i];
+        if (!variable) {
+            continue;
+        }
         var typeName: string = getType(variable, options) || "object";
         list += `${typeName} ${variable.name}`;
         if(i < variables.length - 1) {
@@ -64,27 +82,35 @@ export function getType(type: any, options: any): string {
     const baseType: any = type.type;
     let isValueType: boolean = type.isScalar;
     let realType: any = baseType;
+	let isPascalCase: boolean = true;
 
     if(options.data.root.primitivesMap[baseType] !== undefined) {
         realType = options.data.root.primitivesMap[baseType];
         isValueType = realType !== "string";
+		isPascalCase = false;
     }
 
-    if (type.isArray) {
-      return `List<${realType}>`;
-    } else {
-        let typeName: string = scalarTypeMapping[baseType];
-        if(typeName === undefined) {
-            typeName = scalarTypeMapping[realType];
-        }
-        if(typeName === undefined) {
-            typeName = realType;
-        } else {
-            isValueType = true;
-        }
+	let typeName: string = scalarTypeMapping[baseType];
+	if(typeName === undefined) {
+        typeName = scalarTypeMapping[realType];
+    }
+	if(typeName === undefined) {
+		typeName = realType;
+	} else {
+        isValueType = true;
+        isPascalCase = false;
+	}
 
-        const isNullable: boolean = isValueType === true && type.isRequired !== true;
-        return isNullable === true ? `${typeName}?` : typeName;
+	const isNullable: boolean = isValueType === true && type.isRequired !== true;
+
+	if(isPascalCase) {
+		typeName = toPascalCase(typeName);
+	}
+
+    if (type.isArray) {
+        return isNullable ? `List<${typeName}?>` : `List<${typeName}>`;
+    } else {
+        return isNullable ? `${typeName}?` : typeName;
     }
 }
 
