@@ -67,14 +67,14 @@ test("list of nullable known primitives tests", () => {
 test("list of scalar, non scalar tests", () => {
     expect(asArgumentList([
         { name: "a", type: "exotic", isRequired: true, isScalar: true }
-    ] as Variable[], options)).toBe("exotic a");
+    ] as Variable[], options)).toBe("Exotic a");
 
     expect(asArgumentList([
         { name: "a", type: "exotic", isRequired: false, isScalar: true },
         { name: "b", type: "blah", isRequired: false, isScalar: false },
         { name: "c", type: "Blah", isRequired: false, isScalar: false },
         { name: "d", type: "Exotic", isRequired: false, isScalar: true },
-    ] as Variable[], options)).toBe("exotic? a, blah b, Blah c, Exotic? d");
+    ] as Variable[], options)).toBe("Exotic? a, Blah b, Blah c, Exotic? d");
 });
 
 test("list of array tests", () => {
@@ -85,7 +85,7 @@ test("list of array tests", () => {
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: false, isArray: true },
         { name: "b", type: "DateTime", isRequired: true, isArray: true },
-        { name: "c", type: "exotic", isRequired: true, isArray: true, isScalar: true },
+        { name: "c", type: "Exotic", isRequired: true, isArray: true, isScalar: true },
         { name: "d", type: "Exotic", isRequired: false, isArray: true, isScalar: true },
-    ] as Variable[], options)).toBe("List<int?> a, List<DateTime> b, List<exotic> c, List<Exotic?> d");
+    ] as Variable[], options)).toBe("List<int?> a, List<DateTime> b, List<Exotic> c, List<Exotic?> d");
 });

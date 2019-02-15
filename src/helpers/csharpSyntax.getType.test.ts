@@ -62,10 +62,10 @@ test("string tests", () => {
 });
 
 test("scalar, non scalar tests", () => {
-    expect(getType({ type: "exotic", isRequired: true, isScalar: true } as Variable, options)).toBe("exotic");
-    expect(getType({ type: "exotic", isRequired: false, isScalar: true } as Variable, options)).toBe("exotic?");
-    expect(getType({ type: "exotic", isRequired: true, isScalar: false } as Variable, options)).toBe("exotic");
-    expect(getType({ type: "exotic", isRequired: false, isScalar: false } as Variable, options)).toBe("exotic");
+    expect(getType({ type: "exotic", isRequired: true, isScalar: true } as Variable, options)).toBe("Exotic");
+    expect(getType({ type: "exotic", isRequired: false, isScalar: true } as Variable, options)).toBe("Exotic?");
+    expect(getType({ type: "exotic", isRequired: true, isScalar: false } as Variable, options)).toBe("Exotic");
+    expect(getType({ type: "exotic", isRequired: false, isScalar: false } as Variable, options)).toBe("Exotic");
     expect(getType({ type: "Exotic", isRequired: true, isScalar: true } as Variable, options)).toBe("Exotic");
     expect(getType({ type: "Exotic", isRequired: false, isScalar: true } as Variable, options)).toBe("Exotic?");
     expect(getType({ type: "Exotic", isRequired: true, isScalar: false } as Variable, options)).toBe("Exotic");
@@ -77,8 +77,8 @@ test("array tests", () => {
     expect(getType({ type: "DateTime", isRequired: true, isArray: true } as Variable, options)).toBe("List<DateTime>");
     expect(getType({ type: "Int", isRequired: false, isArray: true } as Variable, options)).toBe("List<int?>");
     expect(getType({ type: "DateTime", isRequired: false, isArray: true } as Variable, options)).toBe("List<DateTime?>");
-    expect(getType({ type: "exotic", isRequired: true, isArray: true, isScalar: true } as Variable, options)).toBe("List<exotic>");
-    expect(getType({ type: "exotic", isRequired: false, isArray: true, isScalar: true } as Variable, options)).toBe("List<exotic?>");
+    expect(getType({ type: "exotic", isRequired: true, isArray: true, isScalar: true } as Variable, options)).toBe("List<Exotic>");
+    expect(getType({ type: "exotic", isRequired: false, isArray: true, isScalar: true } as Variable, options)).toBe("List<Exotic?>");
     expect(getType({ type: "Exotic", isRequired: true, isArray: true, isScalar: true } as Variable, options)).toBe("List<Exotic>");
     expect(getType({ type: "Exotic", isRequired: false, isArray: true, isScalar: true } as Variable, options)).toBe("List<Exotic?>");
 });
