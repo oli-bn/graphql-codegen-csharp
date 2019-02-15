@@ -6,14 +6,6 @@
 
 namespace Generated
 {
-    public class DateFormatConverter : IsoDateTimeConverter
-    {
-        public DateFormatConverter(string format)
-        {
-            DateTimeFormat = format;
-        }
-    }
-
     public class Error
     {
         [JsonProperty("message")]
@@ -62,13 +54,13 @@ namespace Generated
 
     public interface IQuery
     {
-        string GetQueryText();
-        object GetParsedObject(string jsonText);
+        string GetQueryText(JsonSerializerSettings jsonSerializerSettings = null);
+        object GetParsedObject(string jsonText, JsonSerializerSettings jsonSerializerSettings = null);
     }
 
     public interface IQuery<out T> : IQuery
     {
-        new T GetParsedObject(string jsonText);
+        new T GetParsedObject(string jsonText, JsonSerializerSettings jsonSerializerSettings = null);
     }
 }
 
@@ -95,7 +87,7 @@ namespace Generated.{{ toPascalCase name }}
         public {{{ convertedType this }}} {{ toPascalCase name }} { get; }
         {{/each}}
 
-        public virtual string GetQueryText()
+        public virtual string GetQueryText(JsonSerializerSettings jsonSerializerSettings = null)
         {
             return JsonConvert.SerializeObject(new
             {
@@ -104,12 +96,12 @@ namespace Generated.{{ toPascalCase name }}
 {{#each variables}}                        {{ name }} = {{ toPascalCase name }}{{{ converterIfNeeded this }}},
 {{/each}}
                     }
-                });
+                }, jsonSerializerSettings);
             }  
 
-            public virtual Data GetParsedObject(string jsonText)
+            public virtual Data GetParsedObject(string jsonText, JsonSerializerSettings jsonSerializerSettings = null)
             {
-                var result = JsonConvert.DeserializeObject<Result<Data>>(jsonText);
+                var result = JsonConvert.DeserializeObject<Result<Data>>(jsonText, jsonSerializerSettings);
 
                 if (result.Error != null || result.Errors != null)
                 {
@@ -119,20 +111,12 @@ namespace Generated.{{ toPascalCase name }}
                 return result.Data;
             }
 
-            string IQuery.GetQueryText()
-            {
-                return GetQueryText();
-            }
-
-            Data IQuery<Data>.GetParsedObject(string jsonText)
-            {
-                return GetParsedObject(jsonText);
-            }
-
-            object IQuery.GetParsedObject(string jsonText)
-            {
-                return GetParsedObject(jsonText);
-            }
+            string IQuery.GetQueryText(JsonSerializerSettings jsonSerializerSettings) => 
+                GetQueryText(jsonSerializerSettings);
+            Data IQuery<Data>.GetParsedObject(string jsonText, JsonSerializerSettings jsonSerializerSettings) => 
+                GetParsedObject(jsonText, jsonSerializerSettings);
+            object IQuery.GetParsedObject(string jsonText, JsonSerializerSettings jsonSerializerSettings) => 
+                GetParsedObject(jsonText, jsonSerializerSettings);
         }
 
         public sealed class Data
