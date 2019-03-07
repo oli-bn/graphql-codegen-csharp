@@ -56,20 +56,22 @@ export function converterIfNeeded(variable: Variable): string {
 
 export function asArgumentList(variables: Variable[], options: any): string {
     var list: string = "";
-    if(!variables) {
-        return list;
+    variables = (variables ? variables : []).filter(v => v !== null );
+
+    if(variables.length === 0) {
+        return "IResultProcessor<Data> resultProcessor = null";
     }
     for(let i: number = 0; i < variables.length; i++) {
         var variable: Variable = variables[i];
-        if (!variable) {
-            continue;
-        }
         var typeName: string = getType(variable, options) || "object";
         list += `${typeName} ${variable.name}`;
         if(i < variables.length - 1) {
             list += ", ";
         }
     }
+
+    list += ", IResultProcessor<Data> resultProcessor = null";
+
     return list;
 }
 
