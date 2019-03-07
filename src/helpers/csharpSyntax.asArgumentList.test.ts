@@ -38,8 +38,8 @@ test("list of known primitives tests", () => {
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: true },
         { name: "b", type: "Boolean", isRequired: true },
-        { name: "c", type: "Long", isRequired: true },
-        { name: "d", type: "Float", isRequired: true },
+        { name: "C", type: "Long", isRequired: true },
+        { name: "D", type: "Float", isRequired: true },
     ] as Variable[], options)).toBe("int a, bool b, long c, float d");
 });
 
@@ -49,7 +49,7 @@ test("list of nullable known primitives tests", () => {
     ] as Variable[], options)).toBe("int? a");
 
     expect(asArgumentList([
-        { name: "a", type: "Int", isRequired: false },
+        { name: "A", type: "Int", isRequired: false },
         null,
         { name: "b", type: "Boolean", isRequired: true },
         { name: "c", type: "Date", isRequired: false },
@@ -58,7 +58,7 @@ test("list of nullable known primitives tests", () => {
 
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: true },
-        { name: "b", type: "Boolean", isRequired: false },
+        { name: "B", type: "Boolean", isRequired: false },
         { name: "c", type: "Long", isRequired: false },
         { name: "d", type: "Float", isRequired: false },
     ] as Variable[], options)).toBe("int a, bool? b, long? c, float? d");

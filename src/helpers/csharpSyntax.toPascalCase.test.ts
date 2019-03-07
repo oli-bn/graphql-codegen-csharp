@@ -1,11 +1,12 @@
-import { toPascalCase } from "./csharpSyntax";
+// tslint:disable-next-line:typedef
+const pascalcase = require("pascalcase");
 
 test("method should return a pascal cased string", () => {
-    expect(toPascalCase("foo bar")).toBe("FooBar");
-    expect(toPascalCase("Foo Bar")).toBe("FooBar");
-    expect(toPascalCase("fooBar")).toBe("FooBar");
-    expect(toPascalCase("FooBar")).toBe("FooBar");
-    expect(toPascalCase("--foo-bar--")).toBe("FooBar");
-    expect(toPascalCase("__FOO_BAR__")).toBe("FooBar");
-    expect(toPascalCase("!--foo-¿?-bar--121-**%")).toBe("FooBar121");
+    expect(pascalcase("foo bar")).toBe("FooBar");
+    expect(pascalcase("Foo Bar")).toBe("FooBar");
+    expect(pascalcase("fooBar")).toBe("FooBar");
+    expect(pascalcase("FooBar")).toBe("FooBar");
+    expect(pascalcase("--foo-bar--")).toBe("FooBar");
+    expect(pascalcase("__FOO_BAR__")).toBe("FOOBAR");
+    expect(pascalcase("!--foo-¿?-bar--121-**%")).toBe("FooBar121");
 });

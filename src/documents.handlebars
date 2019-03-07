@@ -134,7 +134,7 @@ namespace Generated.{{ toPascalCase name }}
         public {{ toPascalCase operationType }}({{{asArgumentList variables}}}, IResultProcessor<Data> resultProcessor = null) : base(resultProcessor)
         {
       {{#each variables}}
-            {{ toPascalCase name }} = {{ name }};
+            {{ toPascalCase name }} = {{ toCamelCase name }};
       {{/each}}
         }
         
@@ -157,14 +157,15 @@ namespace Generated.{{ toPascalCase name }}
       {{/if}}  
     }
 
-    {{> fragments this }}
-      {{#each innerModels }}
-        {{ toCsharpComment "Inner Model" }} 
+    {{#each innerModels }}
+    {{ toCsharpComment "Inner Model" }} 
     public sealed class {{ modelType }} 
     {
       {{#if hasFields}}     
         {{> selectionSet fields }}
-    }{{/if}}{{> fragments this }}
+      {{/if}}
+    }
+    
     {{/each}}
 }
 
