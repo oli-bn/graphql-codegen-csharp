@@ -38,9 +38,7 @@ test("nullable known primitives tests", () => {
 
 test("float tests", () => {
     expect(getType({ type: "Float", isRequired: true } as Variable, options)).toBe("float");
-    expect(getType({ type: "Float", isRequired: true } as Variable, options)).toBe("float");
     expect(getType({ type: "Float32Bit", isRequired: true } as Variable, options)).toBe("float");
-    expect(getType({ type: "Float", isRequired: false } as Variable, options)).toBe("float?");
     expect(getType({ type: "Float", isRequired: false } as Variable, options)).toBe("float?");
     expect(getType({ type: "Float32Bit", isRequired: false } as Variable, options)).toBe("float?");
 });
