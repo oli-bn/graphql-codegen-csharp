@@ -131,7 +131,7 @@ namespace Generated.{{ toPascalCase name }}
     { 
         private const string _query = @"{{asQueryUnescapedText document}}";
 
-        public {{ toPascalCase operationType }}({{{asArgumentList variables}}}, IResultProcessor<Data> resultProcessor = null) : base(resultProcessor)
+        public {{ toPascalCase operationType }}({{{asArgumentList variables}}}) : base(resultProcessor)
         {
       {{#each variables}}
             {{ toPascalCase name }} = {{ toCamelCase name }};

@@ -16,16 +16,16 @@ const options: any = {
 };
 
 test("incorrect arguments tests", () => {
-    expect(asArgumentList(null, options)).toBe("");
-    expect(asArgumentList(undefined, options)).toBe("");
-    expect(asArgumentList([], options)).toBe("");
-    expect(asArgumentList([null], options)).toBe("");
+    expect(asArgumentList(null, options)).toBe("IResultProcessor<Data> resultProcessor = null");
+    expect(asArgumentList(undefined, options)).toBe("IResultProcessor<Data> resultProcessor = null");
+    expect(asArgumentList([], options)).toBe("IResultProcessor<Data> resultProcessor = null");
+    expect(asArgumentList([null], options)).toBe("IResultProcessor<Data> resultProcessor = null");
 });
 
 test("list of known primitives tests", () => {
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: true }
-    ] as Variable[], options)).toBe("int a");
+    ] as Variable[], options)).toBe("int a, IResultProcessor<Data> resultProcessor = null");
 
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: true },
@@ -33,20 +33,20 @@ test("list of known primitives tests", () => {
         { name: "b", type: "Boolean", isRequired: true },
         { name: "c", type: "Date", isRequired: true },
         { name: "d", type: "String", isRequired: true }
-    ] as Variable[], options)).toBe("int a, bool b, DateTime c, string d");
+    ] as Variable[], options)).toBe("int a, bool b, DateTime c, string d, IResultProcessor<Data> resultProcessor = null");
 
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: true },
         { name: "b", type: "Boolean", isRequired: true },
         { name: "C", type: "Long", isRequired: true },
         { name: "D", type: "Float", isRequired: true },
-    ] as Variable[], options)).toBe("int a, bool b, long c, float d");
+    ] as Variable[], options)).toBe("int a, bool b, long c, float d, IResultProcessor<Data> resultProcessor = null");
 });
 
 test("list of nullable known primitives tests", () => {
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: false }
-    ] as Variable[], options)).toBe("int? a");
+    ] as Variable[], options)).toBe("int? a, IResultProcessor<Data> resultProcessor = null");
 
     expect(asArgumentList([
         { name: "A", type: "Int", isRequired: false },
@@ -54,38 +54,39 @@ test("list of nullable known primitives tests", () => {
         { name: "b", type: "Boolean", isRequired: true },
         { name: "c", type: "Date", isRequired: false },
         { name: "d", type: "String", isRequired: false }
-    ] as Variable[], options)).toBe("int? a, bool b, DateTime? c, string d");
+    ] as Variable[], options)).toBe("int? a, bool b, DateTime? c, string d, IResultProcessor<Data> resultProcessor = null");
 
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: true },
         { name: "B", type: "Boolean", isRequired: false },
         { name: "c", type: "Long", isRequired: false },
         { name: "d", type: "Float", isRequired: false },
-    ] as Variable[], options)).toBe("int a, bool? b, long? c, float? d");
+    ] as Variable[], options)).toBe("int a, bool? b, long? c, float? d, IResultProcessor<Data> resultProcessor = null");
 });
 
 test("list of scalar, non scalar tests", () => {
     expect(asArgumentList([
         { name: "a", type: "exotic", isRequired: true, isScalar: true }
-    ] as Variable[], options)).toBe("Exotic a");
+    ] as Variable[], options)).toBe("Exotic a, IResultProcessor<Data> resultProcessor = null");
 
     expect(asArgumentList([
         { name: "a", type: "exotic", isRequired: false, isScalar: true },
         { name: "b", type: "blah", isRequired: false, isScalar: false },
         { name: "c", type: "Blah", isRequired: false, isScalar: false },
         { name: "d", type: "Exotic", isRequired: false, isScalar: true },
-    ] as Variable[], options)).toBe("Exotic? a, Blah b, Blah c, Exotic? d");
+    ] as Variable[], options)).toBe("Exotic? a, Blah b, Blah c, Exotic? d, IResultProcessor<Data> resultProcessor = null");
 });
 
 test("list of array tests", () => {
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: true, isArray: true },
-    ] as Variable[], options)).toBe("List<int> a");
+    ] as Variable[], options)).toBe("List<int> a, IResultProcessor<Data> resultProcessor = null");
 
     expect(asArgumentList([
         { name: "a", type: "Int", isRequired: false, isArray: true },
         { name: "b", type: "DateTime", isRequired: true, isArray: true },
         { name: "c", type: "Exotic", isRequired: true, isArray: true, isScalar: true },
         { name: "d", type: "Exotic", isRequired: false, isArray: true, isScalar: true },
-    ] as Variable[], options)).toBe("List<int?> a, List<DateTime> b, List<Exotic> c, List<Exotic?> d");
+    ] as Variable[], options))
+    .toBe("List<int?> a, List<DateTime> b, List<Exotic> c, List<Exotic?> d, IResultProcessor<Data> resultProcessor = null");
 });
