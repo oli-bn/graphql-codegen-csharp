@@ -25,11 +25,11 @@ namespace Generated
     // input types
 {{#each (getInputTypeIfUsed inputTypes operations) }}   
   {{~> classes }}
-  
+
 {{/each}}
 
     // enums if used 
-{{#each enums}}
+{{#each (getEnumTypesIfUsed inputTypes operations types enums)}}
   {{~> enumTemplate }}
 
 {{/each}}
