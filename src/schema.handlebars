@@ -9,25 +9,25 @@ namespace Generated
 {
 
 // scalars if used 
-{{#each (getTypesIfUsed inputTypes scalars "scalars")}}
+{{#each (getValueTypeIfUsed scalars)}}
     {{~> structs }}
 
 {{/each}}
 
 // types if used 
-{{#each (getTypesIfUsed inputTypes types)}}
-  {{~> classes }}
-
+{{#each operations }}   
+  {{#each (getTypeIfUsed innerModels ../types)}}
+    {{~> classes }}
+  {{/each}}
 {{/each}}
 
 // input types
-{{#each inputTypes}}
+{{#each inputTypes }}   
   {{~> classes }}
-
 {{/each}}
 
 // enums if used 
-{{#each (getTypesIfUsed inputTypes enums)}}
+{{#each enums}}
   {{~> enumTemplate }}
 
 {{/each}}
