@@ -39,16 +39,6 @@ export function asQueryUnescapedText(text: string): SafeString {
     return new SafeString("");
 }
 
-export function converterIfNeeded(variable: Variable): string {
-    const converter: string = typeConverterMapping[variable.type];
-
-    if(converter === undefined) {
-        return "";
-    }
-
-    return converter;
-}
-
 export function asArgumentList(variables: Variable[], options: any): string {
     var list: string = "";
     variables = (variables ? variables : []).filter(v => v !== null );
@@ -70,10 +60,18 @@ export function asArgumentList(variables: Variable[], options: any): string {
     return list;
 }
 
-export function getType(type: any, options: any): string {
+interface ITypeInfo {
+    name: string;
+    isNullable: boolean;
+    isPascalCase: boolean;
+    isValueType: boolean;
+    isArray: boolean;
+}
+
+function getTypeInfo(type: any, options: any): ITypeInfo {
 
     if (!type) {
-      return "object";
+      return null;
     }
 
     const baseType: any = type.type;
@@ -96,22 +94,46 @@ export function getType(type: any, options: any): string {
 	} else {
         isValueType = true;
         isPascalCase = false;
-	}
+    }
 
-	const isNullable: boolean = isValueType === true && type.isRequired !== true;
+    return {
+        name: typeName,
+        isNullable: isValueType === true && type.isRequired !== true,
+        isPascalCase: isPascalCase,
+        isValueType: isValueType,
+        isArray: type.isArray
+    } as ITypeInfo;
+}
 
-	if(isPascalCase) {
-		typeName = pascalcase(camelCase(typeName));
-	}
+export function converterIfNeeded(variable: Variable, options: any): string {
 
-    if (type.isArray) {
-        return isNullable ? `List<${typeName}?>` : `List<${typeName}>`;
+    if(!variable) {
+        return "";
+    }
+
+    const typeInfo: ITypeInfo = getTypeInfo(variable, options);
+    const converter: string = typeConverterMapping[variable.type];
+
+    if(converter === undefined) {
+        return "";
+    }
+
+    return typeInfo.isNullable ? `?${converter}` : converter;
+}
+
+export function getType(type: any, options: any): string {
+
+    if (!type) {
+      return "object";
+    }
+
+    const typeInfo: ITypeInfo = getTypeInfo(type, options);
+    const typeName: string = typeInfo.isPascalCase ? pascalcase(camelCase(typeInfo.name)) : typeInfo.name;
+
+    if (typeInfo.isArray) {
+        return typeInfo.isNullable ? `List<${typeName}?>` : `List<${typeName}>`;
     } else {
-        if(typeName.indexOf("List<") > -1) {
-            return typeName;
-        } else {
-            return isNullable ? `${typeName}?` : typeName;
-        }
+        return typeInfo.isNullable ? `${typeName}?` : typeName;
     }
 }
 
