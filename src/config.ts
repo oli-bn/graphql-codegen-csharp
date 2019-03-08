@@ -13,7 +13,10 @@ import {
   getOptionals,
   toCsharpComment, asQueryUnescapedText, asArgumentList, converterIfNeeded, asJsonString,
   isMutation,
-  getTypesIfUsed
+  getTypeIfUsed,
+  getValueTypeIfUsed,
+  toBetterPascalCase,
+  getInputTypeIfUsed
   } from "./helpers/csharpSyntax";
 
 export const config: GeneratorConfig = {
@@ -34,7 +37,7 @@ export const config: GeneratorConfig = {
     Int: "int",
     Float: "float",
     Boolean: "bool",
-    ID: "string"
+    ID: "string",
   },
   customHelpers: {
     convertedType: getType,
@@ -44,8 +47,11 @@ export const config: GeneratorConfig = {
     asArgumentList,
     asJsonString,
     isMutation,
-    getTypesIfUsed,
+    getTypeIfUsed,
+    getValueTypeIfUsed,
+    getInputTypeIfUsed,
     converterIfNeeded,
+    toBetterPascalCase,
   },
   outFile: "Classes.cs",
   // filesExtension: 'cs',

@@ -1,5 +1,9 @@
 import { SafeString } from "handlebars";
-import { Variable, Type, Field } from "graphql-codegen-core";
+// tslint:disable-next-line:typedef
+import * as pascalcase from "pascalcase";
+// tslint:disable-next-line:typedef
+import * as camelCase from "camelcase";
+import { Variable, Type, SelectionSetFieldNode, Operation, Field } from "graphql-codegen-core";
 
 const scalarTypeMapping : { [name: string]: string; } = {
     "Date" : "DateTime",
@@ -9,23 +13,19 @@ const scalarTypeMapping : { [name: string]: string; } = {
     "Float": "float",
     "Float32Bit" : "float",
     "LocalTime" : "DateTime",
-    "URI" : "Uri"
+    "LocalDate" : "DateTime",
+    "URI" : "Uri",
+    "Char" : "char",
+    "StringSet": "List<string>",
+    "X509Certificate": "string",
 };
 
 const typeConverterMapping : { [name: string]: string; } = {
     "Date" : ".ToString(\"yyyy-MM-dd\")",
 };
 
-export function toPascalCase(text: string): string {
-    return `${text}`
-    .replace(new RegExp(/[-_]+/, "g"), " ")
-    .replace(new RegExp(/[^\w\s]/, "g"), "")
-    .replace(
-        new RegExp(/\s+(.)(\w+)/, "g"),
-        ($1, $2, $3) => `${$2.toUpperCase() + $3.toLowerCase()}`
-        )
-        .replace(new RegExp(/\s/, "g"), "")
-        .replace(new RegExp(/\w/), s => s.toUpperCase());
+export function toBetterPascalCase(text: string): string {
+    return pascalcase(camelCase(text));
 }
 
 export function toCsharpComment(text: string): SafeString {
@@ -54,7 +54,7 @@ export function asArgumentList(variables: Variable[], options: any): string {
     for(let i: number = 0; i < variables.length; i++) {
         var variable: Variable = variables[i];
         var typeName: string = getType(variable, options) || "object";
-        list += `${typeName} ${variable.name}`;
+        list += `${typeName} ${camelCase(variable.name)}`;
         if(i < variables.length - 1) {
             list += ", ";
         }
@@ -133,7 +133,7 @@ export function getType(type: any, options: any): string {
     }
 
     const typeInfo: ITypeInfo = getTypeInfo(type, options);
-    const typeName: string = typeInfo.isPascalCase ? toPascalCase(typeInfo.name) : typeInfo.name;
+    const typeName: string = typeInfo.isPascalCase ? toBetterPascalCase(typeInfo.name) : typeInfo.name;
 
     if (typeInfo.isArray) {
         return typeInfo.isNullable ? `List<${typeName}?>` : `List<${typeName}>`;
@@ -170,35 +170,103 @@ export function isMutation(typeName: String): Boolean {
     return typeName.lastIndexOf("Mutation") > -1;
 }
 
-export function getTypesIfUsed(inputTypes: [any], classes: [any], typeName: string): any {
+export function getValueTypeIfUsed(enums: Type[]): Type[] {
+    const valueTypes: Type[] = [];
 
-    const typeNameMap: { [name: string]: any; } = { };
-    const usedTypes: any[] = [];
-
-    classes.forEach(c => {
-        var name: string = c.name;
-        if(typeNameMap[name] === undefined) {
-            typeNameMap[name] = c;
+    enums.forEach(e => {
+        if(scalarTypeMapping[e.name] === undefined) {
+            valueTypes.push(e);
         }
     });
 
+    return valueTypes;
+}
+
+export function getInputTypeIfUsed(inputTypes: Type[], operations: Operation[]): Type[] {
+
+    if(!inputTypes || !operations) {
+        return [];
+    }
+    const variablesTypeNames: string[] = [];
+    const usedTypesMap: { [name: string]: Type; } = { };
+    const typeNameMap: { [name: string]: Type; } = { };
+
     inputTypes.forEach(c => {
-        if(c.fields) {
-            c.fields.forEach(f => {
-                var type: any = typeNameMap[f.type];
-                if(type !== undefined && usedTypes.indexOf(type) === -1) {
-                    if(typeName === "scalars") {
-                        const csharpTypeName: string = scalarTypeMapping[f.type];
-                        if(csharpTypeName === undefined) {
-                            usedTypes.push(type);
-                        }
-                    } else {
-                        usedTypes.push(type);
-                    }
+        if(typeNameMap[c.name] === undefined) {
+            typeNameMap[c.name] = c;
+        }
+    });
+
+    operations.forEach((o: Operation) => {
+        if(o.hasVariables) {
+            o.variables.forEach((v: Variable) => {
+                if(variablesTypeNames.indexOf(v.type) === -1) {
+                    variablesTypeNames.push(v.type);
                 }
             });
         }
     });
 
-    return usedTypes;
+    const processFields: any = (fields: Field[]) => {
+        fields.forEach((fields: Field) => {
+            let type: Type = typeNameMap[fields.type];
+            if(type !== undefined && usedTypesMap[fields.type] === undefined) {
+                usedTypesMap[fields.type] = type;
+                if(type.hasFields) {
+                    processFields(type.fields);
+                }
+            }
+        });
+    };
+
+    inputTypes.forEach((inputType: Type) => {
+        if(variablesTypeNames.indexOf(inputType.name) !== -1 && usedTypesMap[inputType.name] === undefined) {
+            usedTypesMap[inputType.name] = inputType;
+            if(inputType.hasFields) {
+                processFields(inputType.fields);
+            }
+        }
+    });
+
+    return Object.values(usedTypesMap);
+}
+
+export function getTypeIfUsed(innerModels: any[], classes: Type[]): Type[] {
+
+    const selectionSet: { [name: string]: any; } = { };
+    const typeNameMap: { [name: string]: Type; } = { };
+
+    innerModels.forEach((m: any) => {
+        let name: string = m.modelType;
+        selectionSet[name] = m;
+    });
+
+    classes.forEach(c => {
+        if(typeNameMap[c.name] === undefined) {
+            typeNameMap[c.name] = c;
+        }
+    });
+
+    const usedTypesMap: { [name: string]: Type; } = { };
+
+    const processFields: any = (fields: SelectionSetFieldNode[]) => {
+        if(!fields) {
+            return;
+        }
+        fields.forEach((f: SelectionSetFieldNode) => {
+            const selectionType: Type = typeNameMap[f.type];
+            if(selectionType !== undefined) {
+                if(selectionSet[f.type] === undefined && usedTypesMap[f.type] === undefined) {
+                    usedTypesMap[f.type] = selectionType;
+                    processFields(selectionType.fields);
+                }
+            }
+        });
+    };
+
+    innerModels.forEach((m: any) => {
+        processFields(m.fields);
+    });
+
+    return Object.values(usedTypesMap);
 }
