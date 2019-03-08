@@ -15,7 +15,8 @@ import {
   isMutation,
   getTypeIfUsed,
   getValueTypeIfUsed,
-  toBetterPascalCase
+  toBetterPascalCase,
+  getInputTypeIfUsed
   } from "./helpers/csharpSyntax";
 
 export const config: GeneratorConfig = {
@@ -36,7 +37,7 @@ export const config: GeneratorConfig = {
     Int: "int",
     Float: "float",
     Boolean: "bool",
-    ID: "string"
+    ID: "string",
   },
   customHelpers: {
     convertedType: getType,
@@ -48,6 +49,7 @@ export const config: GeneratorConfig = {
     isMutation,
     getTypeIfUsed,
     getValueTypeIfUsed,
+    getInputTypeIfUsed,
     converterIfNeeded,
     toBetterPascalCase,
   },

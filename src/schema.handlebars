@@ -8,25 +8,27 @@ using Newtonsoft.Json.Converters;
 namespace Generated
 {
 
-// scalars if used 
+    // scalars if used 
 {{#each (getValueTypeIfUsed scalars)}}
     {{~> structs }}
 
 {{/each}}
 
-// types if used 
+    // types if used 
 {{#each operations }}   
   {{#each (getTypeIfUsed innerModels ../types)}}
     {{~> classes }}
+
   {{/each}}
 {{/each}}
 
-// input types
-{{#each inputTypes }}   
+    // input types
+{{#each (getInputTypeIfUsed inputTypes operations) }}   
   {{~> classes }}
+  
 {{/each}}
 
-// enums if used 
+    // enums if used 
 {{#each enums}}
   {{~> enumTemplate }}
 
