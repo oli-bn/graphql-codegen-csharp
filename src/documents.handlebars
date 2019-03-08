@@ -121,31 +121,31 @@ namespace Generated
 
 {{#each operations }}
 
-#region {{ toPascalCase name }} 
+#region {{ toBetterPascalCase name }} 
 
-namespace Generated.{{ toPascalCase name }} 
+namespace Generated.{{ toBetterPascalCase name }} 
 {
 
     {{ toCsharpComment "Operation Type" }}
-    public partial class {{ toPascalCase operationType }} : QueryBase<Data>
+    public partial class {{ toBetterPascalCase operationType }} : QueryBase<Data>
     { 
         private const string _query = @"{{asQueryUnescapedText document}}";
 
-        public {{ toPascalCase operationType }}({{{asArgumentList variables}}}) : base(resultProcessor)
+        public {{ toBetterPascalCase operationType }}({{{asArgumentList variables}}}) : base(resultProcessor)
         {
       {{#each variables}}
-            {{ toPascalCase name }} = {{ name }};
+            {{ toBetterPascalCase name }} = {{ name }};
       {{/each}}
         }
         
         {{#each variables}}       
-        public {{{ convertedType this }}} {{ toPascalCase name }} { get; }
+        public {{{ convertedType this }}} {{ toBetterPascalCase name }} { get; }
         {{/each}}
         protected override string QueryText => _query;
 
         protected override Dictionary<string, object> Variables => new Dictionary<string, object>
         {
-{{#each variables}}            { "{{ name }}", {{ toPascalCase name }}{{{ converterIfNeeded this }}} },
+{{#each variables}}            { "{{ name }}", {{ toBetterPascalCase name }}{{{ converterIfNeeded this }}} },
 {{/each}}
         };        
     }

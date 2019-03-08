@@ -14,7 +14,8 @@ import {
   toCsharpComment, asQueryUnescapedText, asArgumentList, converterIfNeeded, asJsonString,
   isMutation,
   getTypeIfUsed,
-  getValueTypeIfUsed
+  getValueTypeIfUsed,
+  toBetterPascalCase
   } from "./helpers/csharpSyntax";
 
 export const config: GeneratorConfig = {
@@ -48,6 +49,7 @@ export const config: GeneratorConfig = {
     getTypeIfUsed,
     getValueTypeIfUsed,
     converterIfNeeded,
+    toBetterPascalCase,
   },
   outFile: "Classes.cs",
   // filesExtension: 'cs',

@@ -23,6 +23,10 @@ const typeConverterMapping : { [name: string]: string; } = {
     "Date" : ".ToString(\"yyyy-MM-dd\")",
 };
 
+export function toBetterPascalCase(text: string): string {
+    return pascalcase(camelCase(text));
+}
+
 export function toCsharpComment(text: string): SafeString {
     if(text === undefined || text === null || text === "") {
         return new SafeString("");
@@ -128,7 +132,7 @@ export function getType(type: any, options: any): string {
     }
 
     const typeInfo: ITypeInfo = getTypeInfo(type, options);
-    const typeName: string = typeInfo.isPascalCase ? pascalcase(camelCase(typeInfo.name)) : typeInfo.name;
+    const typeName: string = typeInfo.isPascalCase ? toBetterPascalCase(typeInfo.name) : typeInfo.name;
 
     if (typeInfo.isArray) {
         return typeInfo.isNullable ? `List<${typeName}?>` : `List<${typeName}>`;
