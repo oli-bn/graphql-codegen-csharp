@@ -1,5 +1,5 @@
 // tslint:disable-next-line:typedef
-const pascalcase = require("pascalcase");
+import * as pascalcase from "pascalcase";
 
 test("method should return a pascal cased string", () => {
     expect(pascalcase("foo bar")).toBe("FooBar");

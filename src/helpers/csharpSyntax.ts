@@ -1,8 +1,8 @@
 import { SafeString } from "handlebars";
 // tslint:disable-next-line:typedef
-const pascalcase = require("pascalcase");
+import * as pascalcase from "pascalcase";
 // tslint:disable-next-line:typedef
-const camelCase = require("camelcase");
+import * as camelCase from "camelcase";
 import { Variable, Type, SelectionSetFieldNode } from "graphql-codegen-core";
 
 const scalarTypeMapping : { [name: string]: string; } = {
