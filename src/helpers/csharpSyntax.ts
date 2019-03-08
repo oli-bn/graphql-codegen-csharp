@@ -3,8 +3,7 @@ import { SafeString } from "handlebars";
 const pascalcase = require("pascalcase");
 // tslint:disable-next-line:typedef
 const camelCase = require("camelcase");
-import { Variable, Type, Field, Operation, 
-    Fragment, SelectionSetFragmentSpread, SelectionSetInlineFragment, SelectionSetItem } from "graphql-codegen-core";
+import { Variable, Type, SelectionSetFieldNode } from "graphql-codegen-core";
 
 const scalarTypeMapping : { [name: string]: string; } = {
     "Date" : "DateTime",
@@ -14,6 +13,7 @@ const scalarTypeMapping : { [name: string]: string; } = {
     "Float": "float",
     "Float32Bit" : "float",
     "LocalTime" : "DateTime",
+    "LocalDate" : "DateTime",
     "URI" : "Uri",
     "Char" : "char",
     "StringSet": "List<string>"
@@ -143,9 +143,21 @@ export function isMutation(typeName: String): Boolean {
     return typeName.lastIndexOf("Mutation") > -1;
 }
 
-export function getTypeIfUsed(innerModels: SelectionSetItem[], classes: Type[]): Type[] {
+export function getValueTypeIfUsed(enums: Type[]): Type[] {
+    const usedEnums: Type[] = [];
 
-    const selectionSet: { [name: string]: SelectionSetItem; } = { };
+    enums.forEach(e => {
+        if(scalarTypeMapping[e.name] === undefined){
+            usedEnums.push(e);
+        }
+    });
+
+    return usedEnums;
+}
+
+export function getTypeIfUsed(innerModels: any[], classes: Type[]): Type[] {
+
+    const selectionSet: { [name: string]: any; } = { };
     const typeNameMap: { [name: string]: Type; } = { };
 
     innerModels.forEach((m: any) => {
@@ -161,107 +173,24 @@ export function getTypeIfUsed(innerModels: SelectionSetItem[], classes: Type[]):
 
     const usedTypesMap: { [name: string]: Type; } = { };
 
-    const o: any = (fields: []) => {
+    const processFields: any = (fields: SelectionSetFieldNode[]) => {
         if(!fields) {
             return;
         }
-
-        const p: any = (set: []) => {
-            set.forEach((t: any) => {
-                if(t.type === "SupplierSummary") {
-                    console.log(t);
+        fields.forEach((f: SelectionSetFieldNode) => {
+            const selectionType: Type = typeNameMap[f.type];
+            if(selectionType !== undefined) {
+                if(selectionSet[f.type] === undefined && usedTypesMap[f.type] === undefined) {
+                    usedTypesMap[f.type] = selectionType;
+                    processFields(selectionType.fields);
                 }
-                const selectionType: Type = typeNameMap[t.type];
-                if(selectionSet[t.type] === undefined && selectionType !== undefined && usedTypesMap[t.type] === undefined) {
-                    usedTypesMap[t.type] = selectionType;
-                }
-                if(t.hasFields) {
-                    o(t.fields);
-                } else {
-                    p(t.selectionSet);
-                }
-            });
-        };
-
-        fields.forEach((f: any) => {
-            p(f.selectionSet);
+            }
         });
     };
 
     innerModels.forEach((m: any) => {
-        if(m.modelType === "SupplierSummary") {
-            console.log(m);
-        }
-        o(m.fields);
+        processFields(m.fields);
     });
 
     return Object.values(usedTypesMap);
-}
-
-export function getTypesIfUsed(inputTypes: [Type], operations: [Operation], classes: [Type], typeName: string): any {
-
-    const typeNameMap: { [name: string]: Type; } = { };
-    const usedTypes: Type[] = [];
-
-    classes.forEach(c => {
-        if(typeNameMap[c.name] === undefined) {
-            typeNameMap[c.name] = c;
-        }
-    });
-
-    const processType: any = (typeName: string) => {
-        let type: Type = typeNameMap[typeName];
-        if(type !== undefined) {
-            if(usedTypes.indexOf(type) === -1) {
-                if(typeName === "scalars") {
-                    const csharpTypeName: string = scalarTypeMapping[typeName];
-                    if(csharpTypeName === undefined) {
-                        usedTypes.push(type);
-                    }
-                } else {
-                    usedTypes.push(type);
-                }
-            }
-        }
-    };
-
-    const processFields: any = (fields: [Field]) => {
-        if(!fields) {
-            return;
-        }
-        fields.forEach(f => {
-            processType(f.type);
-        });
-    };
-
-    const n: any = o => {
-        if(o.hasFields) {
-            o.selectionSet.forEach(e => {
-                processType(e.type);
-                n(e);
-            });
-        }
-    };
-/*
-    if(operations) {
-        operations.forEach(o => {
-            if(o.hasFields) {
-                o.selectionSet.forEach(e => {
-                    let oo: any = e;
-                    processType(oo.type);
-                    if(oo.hasFields) {
-                        n(e);
-                    }
-                });
-            }
-        });
-    } */
-
-    if(inputTypes) {
-        inputTypes.forEach(c => {
-            processFields(c.fields);
-        });
-    }
-
-    return usedTypes;
 }

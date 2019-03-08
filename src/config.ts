@@ -13,7 +13,8 @@ import {
   getOptionals,
   toCsharpComment, asQueryUnescapedText, asArgumentList, converterIfNeeded, asJsonString,
   isMutation,
-  getTypesIfUsed, getTypeIfUsed
+  getTypeIfUsed,
+  getValueTypeIfUsed
   } from "./helpers/csharpSyntax";
 
 export const config: GeneratorConfig = {
@@ -44,8 +45,8 @@ export const config: GeneratorConfig = {
     asArgumentList,
     asJsonString,
     isMutation,
-    getTypesIfUsed,
     getTypeIfUsed,
+    getValueTypeIfUsed,
     converterIfNeeded,
   },
   outFile: "Classes.cs",
