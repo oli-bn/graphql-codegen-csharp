@@ -3,7 +3,7 @@ import { SafeString } from "handlebars";
 import * as pascalcase from "pascalcase";
 // tslint:disable-next-line:typedef
 import * as camelCase from "camelcase";
-import { Variable, Type, SelectionSetFieldNode, Operation, Field } from "graphql-codegen-core";
+import { Variable, Type, SelectionSetFieldNode, Operation, Field, Enum } from "graphql-codegen-core";
 
 const scalarTypeMapping : { [name: string]: string; } = {
     "Date" : "DateTime",
@@ -170,10 +170,45 @@ export function isMutation(typeName: String): Boolean {
     return typeName.lastIndexOf("Mutation") > -1;
 }
 
-export function getValueTypeIfUsed(enums: Type[]): Type[] {
+export function getEnumTypesIfUsed(inputTypes: Type[], operations: Operation[], types: Type[], enums: Enum[]): Enum[] {
+
+    const enumMap: { [name: string]: Enum; } = { };
+    const usedTypesMap: { [name: string]: Enum; } = { };
+
+    try {
+
+        enums.forEach((e: Enum) => {
+            if(enumMap[e.name] === undefined) {
+                enumMap[e.name] = e;
+            }
+        });
+
+/*
+        const usedTypes: Type[] = getTypeIfUsedWithFilter(innerModels, types, t => t.hasFields);
+        const usedInputTypes: Type[] = getInputTypeIfUsedWithFilter(inputTypes, operations, t => t.hasFields);
+
+        if(usedTypes) {
+            usedTypes.forEach((t: Type) => {
+                t.fields.forEach((f: Field) => {
+                    if(f.name && enumMap[f.type] !== undefined && usedTypesMap[f.type] === undefined) {
+                        usedTypesMap[f.type] = enumMap[f.type];
+                    }
+                });
+            });
+        }
+*/
+        return Object.values(usedTypesMap);
+
+    } catch(e) {
+        console.error(e);
+        throw e;
+    }
+}
+
+export function getValueTypeIfUsed(structs: Type[]): Type[] {
     const valueTypes: Type[] = [];
 
-    enums.forEach(e => {
+    structs.forEach(e => {
         if(scalarTypeMapping[e.name] === undefined) {
             valueTypes.push(e);
         }
@@ -182,91 +217,122 @@ export function getValueTypeIfUsed(enums: Type[]): Type[] {
     return valueTypes;
 }
 
-export function getInputTypeIfUsed(inputTypes: Type[], operations: Operation[]): Type[] {
-
+function getInputTypeIfUsedWithFilter(inputTypes: Type[], operations: Operation[], filter: (t: Type) => boolean): Type[] {
     if(!inputTypes || !operations) {
         return [];
     }
-    const variablesTypeNames: string[] = [];
-    const usedTypesMap: { [name: string]: Type; } = { };
-    const typeNameMap: { [name: string]: Type; } = { };
 
-    inputTypes.forEach(c => {
-        if(typeNameMap[c.name] === undefined) {
-            typeNameMap[c.name] = c;
-        }
-    });
+    try {
 
-    operations.forEach((o: Operation) => {
-        if(o.hasVariables) {
-            o.variables.forEach((v: Variable) => {
-                if(variablesTypeNames.indexOf(v.type) === -1) {
-                    variablesTypeNames.push(v.type);
+        const typeFiler: (t: Type) => boolean = filter == null ? (_) => true : filter;
+        const variablesTypeNames: string[] = [];
+        const usedTypesMap: { [name: string]: Type; } = { };
+        const typeNameMap: { [name: string]: Type; } = { };
+
+        inputTypes.forEach(c => {
+            if(typeNameMap[c.name] === undefined) {
+                typeNameMap[c.name] = c;
+            }
+        });
+
+        operations.forEach((o: Operation) => {
+            if(o.hasVariables) {
+                o.variables.forEach((v: Variable) => {
+                    if(variablesTypeNames.indexOf(v.type) === -1) {
+                        variablesTypeNames.push(v.type);
+                    }
+                });
+            }
+        });
+
+        const processFields: any = (fields: Field[]) => {
+            fields.forEach((fields: Field) => {
+                let type: Type = typeNameMap[fields.type];
+                if(type !== undefined && usedTypesMap[fields.type] === undefined) {
+                    if(typeFiler(type)) {
+                        usedTypesMap[fields.type] = type;
+                    }
+                    if(type.hasFields) {
+                        processFields(type.fields);
+                    }
                 }
             });
-        }
-    });
+        };
 
-    const processFields: any = (fields: Field[]) => {
-        fields.forEach((fields: Field) => {
-            let type: Type = typeNameMap[fields.type];
-            if(type !== undefined && usedTypesMap[fields.type] === undefined) {
-                usedTypesMap[fields.type] = type;
-                if(type.hasFields) {
-                    processFields(type.fields);
+        inputTypes.forEach((inputType: Type) => {
+            if(variablesTypeNames.indexOf(inputType.name) !== -1 && usedTypesMap[inputType.name] === undefined) {
+                if(filter(inputType)) {
+                    usedTypesMap[inputType.name] = inputType;
+                }
+                if(inputType.hasFields) {
+                    processFields(inputType.fields);
                 }
             }
         });
-    };
 
-    inputTypes.forEach((inputType: Type) => {
-        if(variablesTypeNames.indexOf(inputType.name) !== -1 && usedTypesMap[inputType.name] === undefined) {
-            usedTypesMap[inputType.name] = inputType;
-            if(inputType.hasFields) {
-                processFields(inputType.fields);
-            }
+        return Object.values(usedTypesMap);
+    } catch(e) {
+        console.error(e);
+        throw e;
+    }
+}
+
+function getTypeIfUsedWithFilter(innerModels: any[], classes: Type[], filter: (t: Type) => boolean): Type[] {
+    try {
+
+        const selectionSet: { [name: string]: any; } = { };
+        const typeNameMap: { [name: string]: Type; } = { };
+
+        if(filter === null) {
+            filter = (t: Type) => true;
         }
-    });
 
-    return Object.values(usedTypesMap);
+        innerModels.forEach((m: any) => {
+            let name: string = m.modelType;
+            selectionSet[name] = m;
+        });
+
+        classes.forEach(c => {
+            if(typeNameMap[c.name] === undefined) {
+                typeNameMap[c.name] = c;
+            }
+        });
+
+        const usedTypesMap: { [name: string]: Type; } = { };
+
+        const processFields: any = (fields: SelectionSetFieldNode[]) => {
+            if(!fields) {
+                return;
+            }
+            fields.forEach((f: SelectionSetFieldNode) => {
+                const selectionType: Type = typeNameMap[f.type];
+                if(selectionType !== undefined) {
+                    if(selectionSet[f.type] === undefined && usedTypesMap[f.type] === undefined) {
+                        if(true) {
+                            usedTypesMap[f.type] = selectionType;
+                        }
+                        processFields(selectionType.fields);
+                    }
+                }
+            });
+        };
+
+        innerModels.forEach((m: any) => {
+            processFields(m.fields);
+        });
+
+        return Object.values(usedTypesMap);
+
+    } catch(e) {
+        console.error(e);
+        throw e;
+    }
+}
+
+export function getInputTypeIfUsed(inputTypes: Type[], operations: Operation[]): Type[] {
+    return getInputTypeIfUsedWithFilter(inputTypes, operations, _ => true);
 }
 
 export function getTypeIfUsed(innerModels: any[], classes: Type[]): Type[] {
-
-    const selectionSet: { [name: string]: any; } = { };
-    const typeNameMap: { [name: string]: Type; } = { };
-
-    innerModels.forEach((m: any) => {
-        let name: string = m.modelType;
-        selectionSet[name] = m;
-    });
-
-    classes.forEach(c => {
-        if(typeNameMap[c.name] === undefined) {
-            typeNameMap[c.name] = c;
-        }
-    });
-
-    const usedTypesMap: { [name: string]: Type; } = { };
-
-    const processFields: any = (fields: SelectionSetFieldNode[]) => {
-        if(!fields) {
-            return;
-        }
-        fields.forEach((f: SelectionSetFieldNode) => {
-            const selectionType: Type = typeNameMap[f.type];
-            if(selectionType !== undefined) {
-                if(selectionSet[f.type] === undefined && usedTypesMap[f.type] === undefined) {
-                    usedTypesMap[f.type] = selectionType;
-                    processFields(selectionType.fields);
-                }
-            }
-        });
-    };
-
-    innerModels.forEach((m: any) => {
-        processFields(m.fields);
-    });
-
-    return Object.values(usedTypesMap);
+    return getTypeIfUsedWithFilter(innerModels, classes, _ => true);
 }
