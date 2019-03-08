@@ -200,7 +200,7 @@ export function getEnumTypesIfUsed(inputTypes: Type[], operations: Operation[], 
         return Object.values(usedTypesMap);
 
     } catch(e) {
-        console.error(e);
+        // console.error(e);
         throw e;
     }
 }
@@ -272,7 +272,7 @@ function getInputTypeIfUsedWithFilter(inputTypes: Type[], operations: Operation[
 
         return Object.values(usedTypesMap);
     } catch(e) {
-        console.error(e);
+        // console.error(e);
         throw e;
     }
 }
@@ -324,7 +324,7 @@ function getTypeIfUsedWithFilter(innerModels: any[], classes: Type[], filter: (t
         return Object.values(usedTypesMap);
 
     } catch(e) {
-        console.error(e);
+        // console.error(e);
         throw e;
     }
 }
