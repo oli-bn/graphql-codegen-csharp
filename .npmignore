@@ -4,7 +4,10 @@ temp
 yarn-error.log
 /samples
 /src
+/docs
 appveyor.yml
+mkdocs.ps1
+mkdocs.yml
 publish.ps1
 build.ps1
 yarn.lock
