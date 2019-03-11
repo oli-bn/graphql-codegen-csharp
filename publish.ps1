@@ -36,7 +36,7 @@ if($isAppVeyor){
             Remove-Item $npmrcPath
         }
 
-        $auth = "//registry.npmjs.org/:_authToken=" + $env:NPN_TOKEN
+        $auth = "//registry.npmjs.org/:_authToken=`$`{NPM_TOKEN`}"
 
         $auth | Out-File $npmrcPath -Encoding UTF8
         iex "npm pack"
