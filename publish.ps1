@@ -36,7 +36,7 @@ if($isAppVeyor){
             Remove-Item $npmrcPath
         }
 
-        $auth = "//registry.npmjs.org/:_authToken=`$`{$ENV:NPM_TOKEN`}"
+        $auth = "//registry.npmjs.org/:_authToken=`$`{NPM_TOKEN`}"
 
         Write-Output $auth
 
