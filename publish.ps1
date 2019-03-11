@@ -29,14 +29,18 @@ if($isAppVeyor){
 
         $npmrcPath = Join-Path $ENV:APPVEYOR_BUILD_FOLDER ".npmrc"
     
-        Write-Output $npmrcPath
+        Write-Output "npmrc path: $npmrcPath"
     
         if((Test-Path $npmrcPath)) {
             Write-Output "removing old .npmrc"
             Remove-Item $npmrcPath
         }
 
-        "//registry.npmjs.org/:_authToken=`$`{NPM_TOKEN`}" | Out-File $npmrcPath -Encoding UTF8
+        $auth = "//registry.npmjs.org/:_authToken=`$`{NPM_TOKEN`}"
+
+        Write-Output $auth
+
+        $auth | Out-File $npmrcPath -Encoding UTF8
         iex "npm pack"
         iex "npm publish"
     }
