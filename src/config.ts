@@ -15,6 +15,7 @@ import {
   isMutation,
   getTypeIfUsed,
   getValueTypeIfUsed,
+  getEnumTypesIfUsed,
   toBetterPascalCase,
   getInputTypeIfUsed
   } from "./helpers/csharpSyntax";
@@ -50,6 +51,7 @@ export const config: GeneratorConfig = {
     getTypeIfUsed,
     getValueTypeIfUsed,
     getInputTypeIfUsed,
+    getEnumTypesIfUsed,
     converterIfNeeded,
     toBetterPascalCase,
   },
