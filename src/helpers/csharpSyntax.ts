@@ -170,6 +170,39 @@ export function isMutation(typeName: String): Boolean {
     return typeName.lastIndexOf("Mutation") > -1;
 }
 
+export function getTypesIfUsed(inputTypes: [any], classes: [any], typeName: string): any {
+
+    const typeNameMap: { [name: string]: any; } = { };
+    const usedTypes: any[] = [];
+
+    classes.forEach(c => {
+        var name: string = c.name;
+        if(typeNameMap[name] === undefined) {
+            typeNameMap[name] = c;
+        }
+    });
+
+    inputTypes.forEach(c => {
+        if(c.fields) {
+            c.fields.forEach(f => {
+                var type: any = typeNameMap[f.type];
+                if(type !== undefined && usedTypes.indexOf(type) === -1) {
+                    if(typeName === "scalars") {
+                        const csharpTypeName: string = scalarTypeMapping[f.type];
+                        if(csharpTypeName === undefined) {
+                            usedTypes.push(type);
+                        }
+                    } else {
+                        usedTypes.push(type);
+                    }
+                }
+            });
+        }
+    });
+
+    return usedTypes;
+}
+
 export function getEnumTypesIfUsed(inputTypes: Type[], operations: Operation[], types: Type[], enums: Enum[]): Enum[] {
 
     const enumMap: { [name: string]: Enum; } = { };

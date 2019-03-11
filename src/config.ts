@@ -17,7 +17,8 @@ import {
   getValueTypeIfUsed,
   getEnumTypesIfUsed,
   toBetterPascalCase,
-  getInputTypeIfUsed
+  getInputTypeIfUsed,
+  getTypesIfUsed,
   } from "./helpers/csharpSyntax";
 
 export const config: GeneratorConfig = {
@@ -53,6 +54,7 @@ export const config: GeneratorConfig = {
     getInputTypeIfUsed,
     getEnumTypesIfUsed,
     converterIfNeeded,
+    getTypesIfUsed,
     toBetterPascalCase,
   },
   outFile: "Classes.cs",
