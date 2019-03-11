@@ -26,7 +26,17 @@ $jsonText | Out-File $packagePath -Encoding ascii
 if($isAppVeyor){
 
     if($env:APPVEYOR_REPO_BRANCH -eq "master"){
-        "//registry.npmjs.org/:_authToken=`$`{NPM_TOKEN`}" | Out-File (Join-Path $ENV:APPVEYOR_BUILD_FOLDER ".npmrc") -Encoding UTF8
+
+        $npmrcPath = Join-Path $ENV:APPVEYOR_BUILD_FOLDER ".npmrc"
+    
+        Write-Output $npmrcPath
+    
+        if((Test-Path $npmrcPath)) {
+            Write-Output "removing old .npmrc"
+            Remove-Item $npmrcPath
+        }
+
+        "//registry.npmjs.org/:_authToken=`$`{NPM_TOKEN`}" | Out-File $npmrcPath -Encoding UTF8
         iex "npm pack"
         iex "npm publish"
     }
