@@ -2,7 +2,7 @@
 environment:
   nodejs_version: "8"
 
-#cache: 
+cache: 
   - packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
   - node_modules                    # local npm modules
   - '%APPDATA%\npm-cache'
