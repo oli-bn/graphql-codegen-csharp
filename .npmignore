@@ -15,4 +15,6 @@ yarn.lock
 /dist/*.ts
 /dist/*.map
 tsconfig.json
+jest.config.js
+README.md
 *.tgz
