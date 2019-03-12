@@ -4,65 +4,71 @@ import * as pascalcase from "pascalcase";
 // tslint:disable-next-line:typedef
 import * as camelCase from "camelcase";
 import { Variable, Type, SelectionSetFieldNode, Operation, Field, Enum } from "graphql-codegen-core";
-
-const scalarTypeMapping : { [name: string]: string; } = {
-    "Date" : "DateTime",
-    "DateTime" : "DateTime",
-    "Long" : "long",
-    "BigDecimal" : "decimal",
-    "Float": "float",
-    "Float32Bit" : "float",
-    "LocalTime" : "DateTime",
-    "LocalDate" : "DateTime",
-    "URI" : "Uri",
-    "Char" : "char",
-    "StringSet": "List<string>",
-    "X509Certificate": "string",
-};
+import { scalarTypeMapping } from "../csharpGeneratorConfig";
+import logger from "./logging";
 
 const typeConverterMapping : { [name: string]: string; } = {
     "Date" : ".ToString(\"yyyy-MM-dd\")",
 };
 
 export function toBetterPascalCase(text: string): string {
-    return pascalcase(camelCase(text));
+    try {
+        return pascalcase(camelCase(text));
+    } catch(e) {
+        logger.error("toBetterPascalCase", e);
+        throw e;
+    }
 }
 
 export function toCsharpComment(text: string): SafeString {
-    if(text === undefined || text === null || text === "") {
-        return new SafeString("");
+    try {
+        if(text === undefined || text === null || text === "") {
+            return new SafeString("");
+        }
+        return new SafeString(`/// <summary>${text.replace(/\r?\n|\r/g, " ")}</sumary>`);
+    } catch(e) {
+        logger.error("toCsharpComment", e);
+        throw e;
     }
-    return new SafeString(`/// <summary>${text.replace(/\r?\n|\r/g, " ")}</sumary>`);
 }
 
 export function asQueryUnescapedText(text: string): SafeString {
+    try {
+        if(text) {
+            return new SafeString(text.replace(/&#x3D;/g, "=").replace(/"/g, "\"\""));
+        }
 
-    if(text) {
-        return new SafeString(text.replace(/&#x3D;/g, "=").replace(/"/g, "\"\""));
+        return new SafeString("");
+    } catch(e) {
+        logger.error("asQueryUnescapedText", e);
+        throw e;
     }
-
-    return new SafeString("");
 }
 
 export function asArgumentList(variables: Variable[], options: any): string {
-    var list: string = "";
-    variables = (variables ? variables : []).filter(v => v !== null );
+    try {
+        var list: string = "";
+        variables = (variables ? variables : []).filter(v => v !== null );
 
-    if(variables.length === 0) {
-        return "IResultProcessor<Data> resultProcessor = null";
-    }
-    for(let i: number = 0; i < variables.length; i++) {
-        var variable: Variable = variables[i];
-        var typeName: string = getType(variable, options) || "object";
-        list += `${typeName} ${camelCase(variable.name)}`;
-        if(i < variables.length - 1) {
-            list += ", ";
+        if(variables.length === 0) {
+            return "IResultProcessor<Data> resultProcessor = null";
         }
+        for(let i: number = 0; i < variables.length; i++) {
+            var variable: Variable = variables[i];
+            var typeName: string = getType(variable, options) || "object";
+            list += `${typeName} ${camelCase(variable.name)}`;
+            if(i < variables.length - 1) {
+                list += ", ";
+            }
+        }
+
+        list += ", IResultProcessor<Data> resultProcessor = null";
+
+        return list;
+    } catch(e) {
+        logger.error("asArgumentList", e);
+        throw e;
     }
-
-    list += ", IResultProcessor<Data> resultProcessor = null";
-
-    return list;
 }
 
 interface ITypeInfo {
@@ -75,87 +81,107 @@ interface ITypeInfo {
 
 function getTypeInfo(type: any, options: any): ITypeInfo {
 
-    if (!type) {
-      return null;
-    }
+    try {
 
-    const baseType: any = type.type;
-    let isValueType: boolean = type.isScalar;
-    let realType: any = baseType;
-	let isPascalCase: boolean = true;
+        if (!type) {
+        return null;
+        }
 
-    if(options.data.root.primitivesMap[baseType] !== undefined) {
-        realType = options.data.root.primitivesMap[baseType];
-        isValueType = realType !== "string";
-		isPascalCase = false;
-    }
+        const baseType: any = type.type;
+        let isValueType: boolean = type.isScalar;
+        let realType: any = baseType;
+        let isPascalCase: boolean = true;
 
-	let typeName: string = scalarTypeMapping[baseType];
-	if(typeName === undefined) {
-        typeName = scalarTypeMapping[realType];
-    }
-	if(typeName === undefined) {
-		typeName = realType;
-	} else {
-        isValueType = true;
-        isPascalCase = false;
-    }
+        if(options.data.root.primitivesMap[baseType] !== undefined) {
+            realType = options.data.root.primitivesMap[baseType];
+            isValueType = realType !== "string";
+            isPascalCase = false;
+        }
 
-    return {
-        name: typeName,
-        isNullable: isValueType === true && type.isRequired !== true,
-        isPascalCase: isPascalCase,
-        isValueType: isValueType,
-        isArray: type.isArray
-    } as ITypeInfo;
+        let typeName: string = scalarTypeMapping[baseType];
+        if(typeName === undefined) {
+            typeName = scalarTypeMapping[realType];
+        }
+        if(typeName === undefined) {
+            typeName = realType;
+        } else {
+            isValueType = true;
+            isPascalCase = false;
+        }
+
+        return {
+            name: typeName,
+            isNullable: isValueType === true && type.isRequired !== true,
+            isPascalCase: isPascalCase,
+            isValueType: isValueType,
+            isArray: type.isArray
+        } as ITypeInfo;
+
+    } catch(e) {
+        logger.error("getTypeInfo", e);
+        throw e;
+    }
 }
 
 export function converterIfNeeded(variable: Variable, options: any): string {
+    try {
+        if(!variable) {
+            return "";
+        }
 
-    if(!variable) {
-        return "";
+        const typeInfo: ITypeInfo = getTypeInfo(variable, options);
+        const converter: string = typeConverterMapping[variable.type];
+
+        if(converter === undefined) {
+            return "";
+        }
+
+        return typeInfo.isNullable ? `?${converter}` : converter;
+    } catch(e) {
+        logger.error("converterIfNeeded", e);
+        throw e;
     }
-
-    const typeInfo: ITypeInfo = getTypeInfo(variable, options);
-    const converter: string = typeConverterMapping[variable.type];
-
-    if(converter === undefined) {
-        return "";
-    }
-
-    return typeInfo.isNullable ? `?${converter}` : converter;
 }
 
 export function getType(type: any, options: any): string {
+    try {
+        if (!type) {
+        return "object";
+        }
 
-    if (!type) {
-      return "object";
-    }
+        const typeInfo: ITypeInfo = getTypeInfo(type, options);
+        const typeName: string = typeInfo.isPascalCase ? toBetterPascalCase(typeInfo.name) : typeInfo.name;
 
-    const typeInfo: ITypeInfo = getTypeInfo(type, options);
-    const typeName: string = typeInfo.isPascalCase ? toBetterPascalCase(typeInfo.name) : typeInfo.name;
-
-    if (typeInfo.isArray) {
-        return typeInfo.isNullable ? `List<${typeName}?>` : `List<${typeName}>`;
-    } else {
-        return typeInfo.isNullable ? `${typeName}?` : typeName;
+        if (typeInfo.isArray) {
+            return typeInfo.isNullable ? `List<${typeName}?>` : `List<${typeName}>`;
+        } else {
+            return typeInfo.isNullable ? `${typeName}?` : typeName;
+        }
+    } catch(e) {
+        logger.error("getType", e);
+        throw e;
     }
 }
 
 export function getOptionals(type: any, options: any): string {
-    const config: any = options.data.root.config || {};
-    if (
-        config.avoidOptionals === "1" ||
-        config.avoidOptionals === "true" ||
-        config.avoidOptionals === true ||
-        config.avoidOptionals === 1
-    ) {
+    try {
+        const config: any = options.data.root.config || {};
+        if (
+            config.avoidOptionals === "1" ||
+            config.avoidOptionals === "true" ||
+            config.avoidOptionals === true ||
+            config.avoidOptionals === 1
+        ) {
+            return "";
+        }
+        if (!type.isRequired) {
+            return "";
+        }
         return "";
+    } catch(e) {
+        logger.error("getOptionals", e);
+        throw e;
     }
-    if (!type.isRequired) {
-        return "";
-    }
-    return "";
 }
 
 export function asJsonString(obj: any): string {
@@ -171,44 +197,47 @@ export function isMutation(typeName: String): Boolean {
 }
 
 export function getTypesIfUsed(inputTypes: [any], classes: [any], typeName: string): any {
+    try {
 
-    const typeNameMap: { [name: string]: any; } = { };
-    const usedTypes: any[] = [];
+        const typeNameMap: { [name: string]: any; } = { };
+        const usedTypes: any[] = [];
 
-    classes.forEach(c => {
-        var name: string = c.name;
-        if(typeNameMap[name] === undefined) {
-            typeNameMap[name] = c;
-        }
-    });
+        classes.forEach(c => {
+            var name: string = c.name;
+            if(typeNameMap[name] === undefined) {
+                typeNameMap[name] = c;
+            }
+        });
 
-    inputTypes.forEach(c => {
-        if(c.fields) {
-            c.fields.forEach(f => {
-                var type: any = typeNameMap[f.type];
-                if(type !== undefined && usedTypes.indexOf(type) === -1) {
-                    if(typeName === "scalars") {
-                        const csharpTypeName: string = scalarTypeMapping[f.type];
-                        if(csharpTypeName === undefined) {
+        inputTypes.forEach(c => {
+            if(c.fields) {
+                c.fields.forEach(f => {
+                    var type: any = typeNameMap[f.type];
+                    if(type !== undefined && usedTypes.indexOf(type) === -1) {
+                        if(typeName === "scalars") {
+                            const csharpTypeName: string = scalarTypeMapping[f.type];
+                            if(csharpTypeName === undefined) {
+                                usedTypes.push(type);
+                            }
+                        } else {
                             usedTypes.push(type);
                         }
-                    } else {
-                        usedTypes.push(type);
                     }
-                }
-            });
-        }
-    });
+                });
+            }
+        });
 
-    return usedTypes;
+        return usedTypes;
+    } catch(e) {
+        logger.error("getTypesIfUsed", e);
+        throw e;
+    }
 }
 
 export function getEnumTypesIfUsed(inputTypes: Type[], operations: Operation[], types: Type[], enums: Enum[]): Enum[] {
-
-    const enumMap: { [name: string]: Enum; } = { };
-    const usedTypesMap: { [name: string]: Enum; } = { };
-
     try {
+        const enumMap: { [name: string]: Enum; } = { };
+        const usedTypesMap: { [name: string]: Enum; } = { };
 
         enums.forEach((e: Enum) => {
             if(enumMap[e.name] === undefined) { enumMap[e.name] = e; }
@@ -245,29 +274,34 @@ export function getEnumTypesIfUsed(inputTypes: Type[], operations: Operation[], 
         return Object.values(usedTypesMap);
 
     } catch(e) {
-        // console.error(e);
+        logger.error("getEnumTypesIfUsed", e);
         throw e;
     }
 }
 
 export function getValueTypeIfUsed(structs: Type[]): Type[] {
-    const valueTypes: Type[] = [];
+    try {
+        const valueTypes: Type[] = [];
 
-    structs.forEach(e => {
-        if(scalarTypeMapping[e.name] === undefined) {
-            valueTypes.push(e);
-        }
-    });
+        structs.forEach(e => {
+            if(scalarTypeMapping[e.name] === undefined) {
+                valueTypes.push(e);
+            }
+        });
 
-    return valueTypes;
+        return valueTypes;
+    } catch(e) {
+        logger.error("getValueTypeIfUsed", e);
+        throw e;
+    }
 }
 
 function getInputTypeIfUsedWithFilter(inputTypes: Type[], operations: Operation[], filter: (t: Type) => boolean): Type[] {
-    if(!inputTypes || !operations) {
-        return [];
-    }
-
     try {
+
+        if(!inputTypes || !operations) {
+            return [];
+        }
 
         const typeFiler: (t: Type) => boolean = filter == null ? (_) => true : filter;
         const variablesTypeNames: string[] = [];
@@ -317,7 +351,7 @@ function getInputTypeIfUsedWithFilter(inputTypes: Type[], operations: Operation[
 
         return Object.values(usedTypesMap);
     } catch(e) {
-        // console.error(e);
+        logger.error("getInputTypeIfUsedWithFilter", e);
         throw e;
     }
 }
@@ -369,7 +403,7 @@ function getTypeIfUsedWithFilter(innerModels: any[], classes: Type[], filter: (t
         return Object.values(usedTypesMap);
 
     } catch(e) {
-        // console.error(e);
+        logger.error("getTypeIfUsedWithFilter", e);
         throw e;
     }
 }

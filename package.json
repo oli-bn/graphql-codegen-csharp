@@ -47,6 +47,7 @@
         ]
     },
     "dependencies": {
+        "bs-logger": "^0.2.6",
         "dist": "^0.1.2",
         "extend": "^3.0.2",
         "file": "^0.2.2",
