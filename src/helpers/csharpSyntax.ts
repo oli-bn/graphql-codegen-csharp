@@ -211,29 +211,17 @@ export function getEnumTypesIfUsed(inputTypes: Type[], operations: Operation[], 
     try {
 
         enums.forEach((e: Enum) => {
-            if(enumMap[e.name] === undefined) {
-                enumMap[e.name] = e;
-            }
+            if(enumMap[e.name] === undefined) { enumMap[e.name] = e; }
         });
 
         const usedTypes: Type[] = [];
-
-        operations.forEach((o: any) => {
-            getTypeIfUsedWithFilter(o.innerModels, types, t => t.hasFields).forEach((t: Type) => {
-                if(usedTypes.indexOf(t) === -1) {
-                    usedTypes.push(t);
-                }
-             });
-        });
-
-        getInputTypeIfUsedWithFilter(inputTypes, operations, t => t.hasFields).forEach((t: Type) => {
+        const addType: any = (t: Type) => {
             if(usedTypes.indexOf(t) === -1) {
                 usedTypes.push(t);
             }
-        });
-
-        usedTypes.forEach((t: Type) => {
-            t.fields.forEach((f: Field) => {
+        };
+        const processFields: any = (fields: Field[]) => {
+            fields.forEach((f: Field) => {
                 if(f.isEnum) {
                     const e: Enum = enumMap[f.type];
                     if(e !== undefined && usedTypesMap[e.name] === undefined) {
@@ -241,7 +229,18 @@ export function getEnumTypesIfUsed(inputTypes: Type[], operations: Operation[], 
                     }
                 }
             });
+        };
+
+        operations.forEach((o: any) => {
+            o.innerModels.forEach((i: any) => { processFields(i.fields); });
+            getTypeIfUsedWithFilter(o.innerModels, types, t => t.hasFields)
+                .forEach((t: Type) => { addType(t); });
         });
+
+        getInputTypeIfUsedWithFilter(inputTypes, operations, t => t.hasFields)
+            .forEach((t: Type) => { addType(t); });
+
+        usedTypes.forEach((t: Type) => { processFields(t.fields); });
 
         return Object.values(usedTypesMap);
 
