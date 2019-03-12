@@ -9,3 +9,4 @@ yarn-error.log
 /samples/GitHub/output/packages
 /samples/GitHub/output/OutTest/GitHubSchema.cs
 "site/" 
+/package-lock.json

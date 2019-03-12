@@ -13,7 +13,6 @@ build.ps1
 yarn.lock
 /dist/helpers
 /dist/*.ts
-/dist/*.map
 tsconfig.json
 jest.config.js
 README.md
