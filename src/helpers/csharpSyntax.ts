@@ -230,7 +230,7 @@ export function getEnumTypesIfUsed(inputTypes: Type[], operations: Operation[], 
             });
         }
 */
-        return Object.values(usedTypesMap);
+        return Object.values(enumMap);
 
     } catch(e) {
         // console.error(e);
