@@ -216,21 +216,34 @@ export function getEnumTypesIfUsed(inputTypes: Type[], operations: Operation[], 
             }
         });
 
-/*
-        const usedTypes: Type[] = getTypeIfUsedWithFilter(innerModels, types, t => t.hasFields);
-        const usedInputTypes: Type[] = getInputTypeIfUsedWithFilter(inputTypes, operations, t => t.hasFields);
+        const usedTypes: Type[] = [];
 
-        if(usedTypes) {
-            usedTypes.forEach((t: Type) => {
-                t.fields.forEach((f: Field) => {
-                    if(f.name && enumMap[f.type] !== undefined && usedTypesMap[f.type] === undefined) {
-                        usedTypesMap[f.type] = enumMap[f.type];
+        operations.forEach((o: any) => {
+            getTypeIfUsedWithFilter(o.innerModels, types, t => t.hasFields).forEach((t: Type) => {
+                if(usedTypes.indexOf(t) === -1) {
+                    usedTypes.push(t);
+                }
+             });
+        });
+
+        getInputTypeIfUsedWithFilter(inputTypes, operations, t => t.hasFields).forEach((t: Type) => {
+            if(usedTypes.indexOf(t) === -1) {
+                usedTypes.push(t);
+            }
+        });
+
+        usedTypes.forEach((t: Type) => {
+            t.fields.forEach((f: Field) => {
+                if(f.isEnum) {
+                    const e: Enum = enumMap[f.type];
+                    if(e !== undefined && usedTypesMap[e.name] === undefined) {
+                        usedTypesMap[e.name] = e;
                     }
-                });
+                }
             });
-        }
-*/
-        return Object.values(enumMap);
+        });
+
+        return Object.values(usedTypesMap);
 
     } catch(e) {
         // console.error(e);
