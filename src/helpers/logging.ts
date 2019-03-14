@@ -1,7 +1,13 @@
-import { createLogger, Logger } from "bs-logger";
+import * as winston from "winston";
 
-const logger: Logger = createLogger({
-    targets: "errors.log+:error", // specifying out formatter
-    });
+const logger: winston.Logger = winston.createLogger(
+    {
+        level: "debug",
+        transports: [
+            new winston.transports.Console(),
+            new winston.transports.File({ filename: "error.log", level: "error" }),
+        ]
+    },
+);
 
 export default logger;

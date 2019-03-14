@@ -46,14 +46,15 @@
         ]
     },
     "dependencies": {
-        "bs-logger": "^0.2.6",
+        "@types/winston": "^2.3.1",
         "dist": "^0.1.2",
         "extend": "^3.0.2",
         "file": "^0.2.2",
         "graphql": "0.13.2",
         "lodash": "^4.17.11",
         "merge": "^1.2.1",
-        "uglify-js": "^3.4.9"
+        "uglify-js": "^3.4.9",
+        "winston": "^3.2.1"
     },
     "repository": {
         "type": "git",

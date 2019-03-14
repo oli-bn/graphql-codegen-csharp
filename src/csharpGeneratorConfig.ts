@@ -8,22 +8,28 @@ import * as selectionSet from "./selection-set.handlebars";
 import * as fragments from "./fragments.handlebars";
 import * as enumTemplate from "./enum.handlebars";
 import { EInputType, GeneratorConfig } from "graphql-codegen-core";
+import logger from "./helpers/logging";
 import {
   getType,
   getOptionals,
-  toCsharpComment, asQueryUnescapedText, asArgumentList, converterIfNeeded, asJsonString,
+  toCsharpComment,
+  asQueryUnescapedText,
+  asArgumentList,
+  converterIfNeeded,
+  asJsonString,
   getTypeIfUsed,
   getValueTypeIfUsed,
   getEnumTypesIfUsed,
   toBetterPascalCase,
   getInputTypeIfUsed,
   } from "./helpers/csharpSyntax";
-import logger from "./helpers/logging";
 
 class CsharpGeneratorConfig implements  GeneratorConfig {
     inputType: string = EInputType.SINGLE_FILE;
     flattenTypes: boolean = true;
-    config?: { [configName: string]: any; };
+    config?: { [configName: string]: any; } = {
+      scalarTypeMapping,
+    };
     templates: string | { [templateName: string]: string | string[]; } = {
       index,
       classes,
