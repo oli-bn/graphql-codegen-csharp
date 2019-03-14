@@ -12,7 +12,6 @@
     "devDependencies": {
         "@types/common-tags": "1.4.0",
         "@types/jest": "^24.0.0",
-        "agoda-graphql-codegen-csharp": "^1.0.54",
         "awesome-typescript-loader": "^5.2.0",
         "codegen-handlebars-templates-scripts": "0.9.1",
         "common-tags": "1.8.0",
