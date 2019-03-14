@@ -10,6 +10,7 @@
         "test-update": "jest --silent -u"
     },
     "devDependencies": {
+        "@types/winston": "^2.3.1",
         "@types/common-tags": "1.4.0",
         "@types/jest": "^24.0.0",
         "awesome-typescript-loader": "^5.2.0",
@@ -46,7 +47,6 @@
         ]
     },
     "dependencies": {
-        "@types/winston": "^2.3.1",
         "dist": "^0.1.2",
         "extend": "^3.0.2",
         "file": "^0.2.2",
@@ -71,12 +71,5 @@
     "bugs": {
         "url": "https://github.com/agoda-com/graphql-codegen-csharp/issues"
     },
-    "homepage": "https://agoda-com.github.io/graphql-codegen-csharp/",
-    "resolutions": {
-        "merge": "1.2.1",
-        "typescript": "3.3.3",
-        "lodash": "4.17.11",
-        "extend": "3.0.2",
-        "uglify-js": "3.4.9"
-    }
+    "homepage": "https://agoda-com.github.io/graphql-codegen-csharp/"
 }
