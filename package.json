@@ -13,12 +13,6 @@
         "@types/winston": "^2.3.1",
         "@types/common-tags": "1.4.0",
         "@types/jest": "^24.0.0",
-        "awesome-typescript-loader": "^5.2.0",
-        "codegen-handlebars-templates-scripts": "0.9.1",
-        "common-tags": "1.8.0",
-        "graphql-code-generator": "0.10.7",
-        "graphql-codegen-compiler": "0.9.1",
-        "graphql-codegen-core": "0.9.1",
         "jest": "^24.0.0",
         "ts-jest": "^23.10.5",
         "tslint": "^5.11.0",
@@ -48,7 +42,13 @@
     },
     "dependencies": {
         "graphql": "0.13.2",
-        "winston": "^3.2.1"
+        "winston": "^3.2.1",
+        "graphql-codegen-core": "0.9.1",
+        "codegen-handlebars-templates-scripts": "0.9.1",
+        "graphql-code-generator": "0.10.7",
+        "graphql-codegen-compiler": "0.9.1",
+        "awesome-typescript-loader": "^5.2.0",
+        "common-tags": "1.8.0"
     },
     "repository": {
         "type": "git",

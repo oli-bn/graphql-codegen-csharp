@@ -1,14 +1,15 @@
-import * as index from "./template.handlebars";
-import * as classes from "./class.handlebars";
-import * as structs from "./structs.handlebars";
-import * as interfaces from "./interface.handlebars";
-import * as schema from "./schema.handlebars";
-import * as documents from "./documents.handlebars";
-import * as selectionSet from "./selection-set.handlebars";
-import * as fragments from "./fragments.handlebars";
-import * as enumTemplate from "./enum.handlebars";
+import * as index from "../templates/template.handlebars";
+import * as classes from "../templates/class.handlebars";
+import * as structs from "../templates/structs.handlebars";
+import * as interfaces from "../templates/interface.handlebars";
+import * as schema from "../templates/schema.handlebars";
+import * as documents from "../templates/documents.handlebars";
+import * as selectionSet from "../templates/selection-set.handlebars";
+import * as fragments from "../templates/fragments.handlebars";
+import * as enumTemplate from "../templates/enum.handlebars";
 import { EInputType, GeneratorConfig } from "graphql-codegen-core";
-import logger from "./helpers/logging";
+import logger from "../helpers/logging";
+import { PrimitiveTypesMapping, primitivesMapping } from "./primitivesMapping";
 import {
   getType,
   getOptionals,
@@ -22,7 +23,7 @@ import {
   getEnumTypesIfUsed,
   toBetterPascalCase,
   getInputTypeIfUsed,
-  } from "./helpers/csharpSyntax";
+  } from "../helpers/csharpSyntax";
 
 class CsharpGeneratorConfig implements  GeneratorConfig {
     inputType: string = EInputType.SINGLE_FILE;
@@ -40,13 +41,7 @@ class CsharpGeneratorConfig implements  GeneratorConfig {
       fragments,
       structs
     };
-    primitives: { String: string; Int: string; Float: string; Boolean: string; ID: string; } = {
-      String: "string",
-      Int: "int",
-      Float: "float",
-      Boolean: "bool",
-      ID: "string",
-    };
+    primitives: PrimitiveTypesMapping = primitivesMapping;
     outFile?: string = "Classes.cs";
     filesExtension?: string;
     customHelpers?: { [helperName: string]: Function; } = {

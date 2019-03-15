@@ -4,8 +4,11 @@ import * as pascalcase from "pascalcase";
 // tslint:disable-next-line:typedef
 import * as camelCase from "camelcase";
 import { Variable, Type, SelectionSetFieldNode, Operation, Field, Enum } from "graphql-codegen-core";
-import { scalarTypeMapping } from "../csharpGeneratorConfig";
+import { scalarTypeMapping } from "../config/csharpGeneratorConfig";
 import logger from "./logging";
+
+type TypeFilter = (t: Type) => boolean;
+const defaultTypeFilter: TypeFilter = _ => true;
 
 const typeConverterMapping : { [name: string]: string; } = {
     "Date" : ".ToString(\"yyyy-MM-dd\")",
@@ -296,7 +299,7 @@ export function getValueTypeIfUsed(structs: Type[]): Type[] {
     }
 }
 
-function getInputTypeIfUsedWithFilter(inputTypes: Type[], operations: Operation[], filter: (t: Type) => boolean): Type[] {
+function getInputTypeIfUsedWithFilter(inputTypes: Type[], operations: Operation[], filter: TypeFilter): Type[] {
     try {
 
         if(!inputTypes || !operations) {
@@ -356,7 +359,7 @@ function getInputTypeIfUsedWithFilter(inputTypes: Type[], operations: Operation[
     }
 }
 
-function getTypeIfUsedWithFilter(innerModels: any[], classes: Type[], filter: (t: Type) => boolean): Type[] {
+function getTypeIfUsedWithFilter(innerModels: any[], classes: Type[], filter: TypeFilter): Type[] {
     try {
 
         const selectionSet: { [name: string]: any; } = { };
@@ -409,9 +412,9 @@ function getTypeIfUsedWithFilter(innerModels: any[], classes: Type[], filter: (t
 }
 
 export function getInputTypeIfUsed(inputTypes: Type[], operations: Operation[]): Type[] {
-    return getInputTypeIfUsedWithFilter(inputTypes, operations, _ => true);
+    return getInputTypeIfUsedWithFilter(inputTypes, operations, defaultTypeFilter);
 }
 
 export function getTypeIfUsed(innerModels: any[], classes: Type[]): Type[] {
-    return getTypeIfUsedWithFilter(innerModels, classes, _ => true);
+    return getTypeIfUsedWithFilter(innerModels, classes, defaultTypeFilter);
 }

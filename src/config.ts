@@ -1,3 +1,3 @@
 import { GeneratorConfig } from "graphql-codegen-core";
-import { CsharpGeneratorConfig } from "./csharpGeneratorConfig";
+import { CsharpGeneratorConfig } from "./config/csharpGeneratorConfig";
 export const config: GeneratorConfig = new CsharpGeneratorConfig();

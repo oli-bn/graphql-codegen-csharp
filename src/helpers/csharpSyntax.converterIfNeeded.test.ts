@@ -9,7 +9,7 @@ const options: any = {
                 Int: "int",
                 Float: "float",
                 Boolean: "bool",
-                ID: "string"
+                ID: "string",
               }
         }
     }
