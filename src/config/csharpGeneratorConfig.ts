@@ -57,6 +57,11 @@ class CsharpGeneratorConfig implements  GeneratorConfig {
       getEnumTypesIfUsed: getEnumTypesIfUsed,
       converterIfNeeded: converterIfNeeded,
       toBetterPascalCase: toBetterPascalCase,
+      log: (... args: any[]): void => {
+        // const level: string = args.hash.level;
+        // logger.log(level, message);
+        console.log(args);
+      }
     };
   }
 

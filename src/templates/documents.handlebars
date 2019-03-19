@@ -121,6 +121,7 @@ namespace Generated
 
 {{#each operations }}
 
+{{ log "Processing " name level="debug"}}
 #region {{ toBetterPascalCase name }} 
 
 namespace Generated.{{ toBetterPascalCase name }} 
