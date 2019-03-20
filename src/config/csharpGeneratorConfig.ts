@@ -22,6 +22,7 @@ import {
   getEnumTypesIfUsed,
   toBetterPascalCase,
   getInputTypeIfUsed,
+  getInnerModelName,
   } from "../helpers/csharpSyntax";
 
 class CsharpGeneratorConfig implements  GeneratorConfig {
@@ -55,6 +56,7 @@ class CsharpGeneratorConfig implements  GeneratorConfig {
       getEnumTypesIfUsed: getEnumTypesIfUsed,
       converterIfNeeded: converterIfNeeded,
       toBetterPascalCase: toBetterPascalCase,
+      getInnerModelName,
       log: (... args: any[]): void => {
         if(args && args.length > 0) {
           let message: string = "";

@@ -82,6 +82,10 @@ interface ITypeInfo {
     isArray: boolean;
 }
 
+export function getInnerModelName(type: any, options: any): string {
+    return type.modelType;
+}
+
 function getTypeInfo(type: any, options: any): ITypeInfo {
 
     try {
@@ -91,30 +95,42 @@ function getTypeInfo(type: any, options: any): ITypeInfo {
         }
 
         const baseType: any = type.type;
-        let isValueType: boolean = type.isScalar;
+
+        let typeName: string = null;
+        let isValueType: boolean = false;
         let realType: any = baseType;
         let isPascalCase: boolean = true;
+        let isNullable: boolean = false;
 
-        if(options.data.root.primitivesMap[baseType] !== undefined) {
-            realType = options.data.root.primitivesMap[baseType];
-            isValueType = realType !== "string";
+        if(baseType.startsWith("_")) {
+            typeName = baseType;
             isPascalCase = false;
-        }
-
-        let typeName: string = scalarTypeMapping[baseType];
-        if(typeName === undefined) {
-            typeName = scalarTypeMapping[realType];
-        }
-        if(typeName === undefined) {
-            typeName = realType;
         } else {
-            isValueType = true;
-            isPascalCase = false;
-        }
 
+            isValueType = type.isScalar;
+
+            if(options.data.root.primitivesMap[baseType] !== undefined) {
+                realType = options.data.root.primitivesMap[baseType];
+                isValueType = realType !== "string";
+                isPascalCase = false;
+            }
+
+            typeName = scalarTypeMapping[baseType];
+            if(typeName === undefined) {
+                typeName = scalarTypeMapping[realType];
+            }
+            if(typeName === undefined) {
+                typeName = realType;
+            } else {
+                isValueType = true;
+                isPascalCase = false;
+            }
+
+            isNullable = isValueType === true && type.isRequired !== true;
+        }
         return {
             name: typeName,
-            isNullable: isValueType === true && type.isRequired !== true,
+            isNullable: isNullable,
             isPascalCase: isPascalCase,
             isValueType: isValueType,
             isArray: type.isArray
