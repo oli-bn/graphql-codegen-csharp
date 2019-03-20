@@ -12,7 +12,6 @@ import logger from "../helpers/logging";
 import { PrimitiveTypesMapping, primitivesMapping } from "./primitivesMapping";
 import {
   getType,
-  getOptionals,
   toCsharpComment,
   asQueryUnescapedText,
   asArgumentList,
@@ -46,7 +45,6 @@ class CsharpGeneratorConfig implements  GeneratorConfig {
     filesExtension?: string;
     customHelpers?: { [helperName: string]: Function; } = {
       convertedType: getType,
-      getOptionals: getOptionals,
       toCsharpComment: toCsharpComment,
       asQueryUnescapedText: asQueryUnescapedText,
       asArgumentList: asArgumentList,
@@ -58,9 +56,21 @@ class CsharpGeneratorConfig implements  GeneratorConfig {
       converterIfNeeded: converterIfNeeded,
       toBetterPascalCase: toBetterPascalCase,
       log: (... args: any[]): void => {
-        // const level: string = args.hash.level;
-        // logger.log(level, message);
-        console.log(args);
+        if(args && args.length > 0) {
+          let message: string = "";
+          let level: string = "debug";
+          for(let i: number = 0; i < args.length; i++) {
+            const arg: any = args[i];
+            if(i === args.length -1) {
+              if(arg.hash && arg.hash.level) {
+                level = arg.hash.level;
+              }
+            } else {
+              message = message + arg;
+            }
+          }
+          logger.log(level, message);
+        }
       }
     };
   }

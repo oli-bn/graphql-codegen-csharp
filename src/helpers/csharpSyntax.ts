@@ -87,7 +87,7 @@ function getTypeInfo(type: any, options: any): ITypeInfo {
     try {
 
         if (!type) {
-        return null;
+            return null;
         }
 
         const baseType: any = type.type;
@@ -149,7 +149,7 @@ export function converterIfNeeded(variable: Variable, options: any): string {
 export function getType(type: any, options: any): string {
     try {
         if (!type) {
-        return "object";
+            return "object";
         }
 
         const typeInfo: ITypeInfo = getTypeInfo(type, options);
@@ -162,27 +162,6 @@ export function getType(type: any, options: any): string {
         }
     } catch(e) {
         logger.error("getType", e);
-        throw e;
-    }
-}
-
-export function getOptionals(type: any, options: any): string {
-    try {
-        const config: any = options.data.root.config || {};
-        if (
-            config.avoidOptionals === "1" ||
-            config.avoidOptionals === "true" ||
-            config.avoidOptionals === true ||
-            config.avoidOptionals === 1
-        ) {
-            return "";
-        }
-        if (!type.isRequired) {
-            return "";
-        }
-        return "";
-    } catch(e) {
-        logger.error("getOptionals", e);
         throw e;
     }
 }

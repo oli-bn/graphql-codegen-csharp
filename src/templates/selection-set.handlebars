@@ -1,5 +1,6 @@
 {{#each this}}
+{{ log "        property: " (convertedType this) " " (toBetterPascalCase name) level="debug"}}
 {{ toCsharpComment description }}
 [JsonProperty("{{ name }}")]
-public {{{ convertedType this }}} {{ toBetterPascalCase name }}{{ getOptionals this }} { get; set; }
+public {{{ convertedType this }}} {{ toBetterPascalCase name }} { get; set; }
 {{/each}}
