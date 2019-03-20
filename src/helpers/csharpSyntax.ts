@@ -82,39 +82,55 @@ interface ITypeInfo {
     isArray: boolean;
 }
 
+export function getInnerModelName(type: any, options: any): string {
+    return type.modelType;
+}
+
 function getTypeInfo(type: any, options: any): ITypeInfo {
 
     try {
 
         if (!type) {
-        return null;
+            return null;
         }
 
         const baseType: any = type.type;
-        let isValueType: boolean = type.isScalar;
+
+        let typeName: string = null;
+        let isValueType: boolean = false;
         let realType: any = baseType;
         let isPascalCase: boolean = true;
+        let isNullable: boolean = false;
 
-        if(options.data.root.primitivesMap[baseType] !== undefined) {
-            realType = options.data.root.primitivesMap[baseType];
-            isValueType = realType !== "string";
+        if(baseType.startsWith("_")) {
+            typeName = baseType;
             isPascalCase = false;
-        }
-
-        let typeName: string = scalarTypeMapping[baseType];
-        if(typeName === undefined) {
-            typeName = scalarTypeMapping[realType];
-        }
-        if(typeName === undefined) {
-            typeName = realType;
         } else {
-            isValueType = true;
-            isPascalCase = false;
-        }
 
+            isValueType = type.isScalar;
+
+            if(options.data.root.primitivesMap[baseType] !== undefined) {
+                realType = options.data.root.primitivesMap[baseType];
+                isValueType = realType !== "string";
+                isPascalCase = false;
+            }
+
+            typeName = scalarTypeMapping[baseType];
+            if(typeName === undefined) {
+                typeName = scalarTypeMapping[realType];
+            }
+            if(typeName === undefined) {
+                typeName = realType;
+            } else {
+                isValueType = true;
+                isPascalCase = false;
+            }
+
+            isNullable = isValueType === true && type.isRequired !== true;
+        }
         return {
             name: typeName,
-            isNullable: isValueType === true && type.isRequired !== true,
+            isNullable: isNullable,
             isPascalCase: isPascalCase,
             isValueType: isValueType,
             isArray: type.isArray
@@ -149,7 +165,7 @@ export function converterIfNeeded(variable: Variable, options: any): string {
 export function getType(type: any, options: any): string {
     try {
         if (!type) {
-        return "object";
+            return "object";
         }
 
         const typeInfo: ITypeInfo = getTypeInfo(type, options);
@@ -162,27 +178,6 @@ export function getType(type: any, options: any): string {
         }
     } catch(e) {
         logger.error("getType", e);
-        throw e;
-    }
-}
-
-export function getOptionals(type: any, options: any): string {
-    try {
-        const config: any = options.data.root.config || {};
-        if (
-            config.avoidOptionals === "1" ||
-            config.avoidOptionals === "true" ||
-            config.avoidOptionals === true ||
-            config.avoidOptionals === 1
-        ) {
-            return "";
-        }
-        if (!type.isRequired) {
-            return "";
-        }
-        return "";
-    } catch(e) {
-        logger.error("getOptionals", e);
         throw e;
     }
 }

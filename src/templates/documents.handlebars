@@ -121,6 +121,7 @@ namespace Generated
 
 {{#each operations }}
 
+{{ log "operation: " (toBetterPascalCase name) level="debug"}}
 #region {{ toBetterPascalCase name }} 
 
 namespace Generated.{{ toBetterPascalCase name }} 
@@ -157,40 +158,18 @@ namespace Generated.{{ toBetterPascalCase name }}
       {{/if}}  
     }
 
-    {{> fragments this }}
-      {{#each innerModels }}
-        {{ toCsharpComment "Inner Model" }} 
-    public sealed class {{ modelType }} 
+    {{#each innerModels }}
+    {{ log "    inner model: " (getInnerModelName this) level="debug"}}
+    {{ toCsharpComment "Inner Model" }} 
+    public sealed class {{ getInnerModelName this }} 
     {
-      {{#if hasFields}}     
+        {{#if hasFields}}     
         {{> selectionSet fields }}
-    }{{/if}}{{> fragments this }}
+        {{/if}}
+    }
     {{/each}}
 }
 
 #endregion
 
 {{/each}}
-
-#region fragments
-
-{{#each fragments }}
-
-namespace Generated.{{name}} {
-    public sealed class Fragment
-    {
-{{#if hasFields}} {
-    {{> selectionSet fields }}
-  }{{/if}}{{> fragments this }}
-  {{#each innerModels }}
-
-    public sealed class {{ modelType }} 
-    {
-{{#if hasFields}} { 
-    {{> selectionSet fields }}
-  }{{/if}}{{> fragments this }}
-  {{/each}}
-}
-{{/each}}
-
-#endregion

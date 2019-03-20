@@ -1,6 +1,6 @@
-#$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Stop"
 
-$scriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
+$scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
 
 cd $scriptDir
 
