@@ -1,0 +1,69 @@
+{
+    "name": "agoda-graphql-codegen-csharp",
+    "version": "1.0.55",
+    "description": "---",
+    "license": "MIT",
+    "scripts": {
+        "prepublishOnly": "yarn build",
+        "build": "codegen-handlebars-templates-scripts build",
+        "test": "jest --silent --coverage",
+        "test-update": "jest --silent -u"
+    },
+    "devDependencies": {
+        "@types/winston": "^2.3.1",
+        "@types/common-tags": "1.4.0",
+        "@types/jest": "^24.0.0",
+        "jest": "^24.0.0",
+        "ts-jest": "^23.10.5",
+        "tslint": "^5.11.0",
+        "typescript": "^3.3.3"
+    },
+    "main": "./dist/index.js",
+    "typings": "dist/index.d.ts",
+    "typescript": {
+        "definition": "dist/index.d.ts"
+    },
+    "jest": {
+        "globals": {
+            "ts-jest": "@{enableTsDiagnostics=False}"
+        },
+        "transform": {
+            "^.+\\.tsx?$": "ts-jest"
+        },
+        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json",
+            "node"
+        ]
+    },
+    "dependencies": {
+        "graphql": "0.13.2",
+        "winston": "^3.2.1",
+        "graphql-codegen-core": "0.9.1",
+        "codegen-handlebars-templates-scripts": "0.9.1",
+        "graphql-code-generator": "0.10.7",
+        "graphql-codegen-compiler": "0.9.1",
+        "awesome-typescript-loader": "^5.2.0",
+        "common-tags": "1.8.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/agoda-com/graphql-codegen-csharp.git"
+    },
+    "keywords": [
+        "graphql",
+        "c#",
+        "csharp",
+        "query",
+        "agoda"
+    ],
+    "author": "Agoda",
+    "bugs": {
+        "url": "https://github.com/agoda-com/graphql-codegen-csharp/issues"
+    },
+    "homepage": "https://agoda-com.github.io/graphql-codegen-csharp/"
+}

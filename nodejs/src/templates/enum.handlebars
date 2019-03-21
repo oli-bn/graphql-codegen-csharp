@@ -1,0 +1,8 @@
+    {{ toCsharpComment description }}
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum {{ toBetterPascalCase name }} 
+    {
+{{#each values }}
+        {{value}}{{#unless @last}}, {{/unless}}
+{{/each}}
+    }

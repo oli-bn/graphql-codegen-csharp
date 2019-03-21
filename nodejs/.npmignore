@@ -1,0 +1,16 @@
+node_modules
+*.log
+*.ps1
+*.tgz
+*.yml
+temp
+/typings
+/samples
+/src
+/docs
+yarn.lock
+/dist/helpers
+/dist/*.ts
+tsconfig.json
+jest.config.js
+README.md
