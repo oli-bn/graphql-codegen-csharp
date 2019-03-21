@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+#$ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
 
@@ -24,7 +24,7 @@ Write-Output "Running Generator"
 $schemaPath = Join-Path $scriptDir "samples/GitHub/input/GitHubSchema.json"
 $outPath = Join-Path $scriptDir "samples/GitHub/output/OutTest/GitHubSchema.cs"
 $queryPath = Join-Path  $scriptDir "samples/GitHub/input/*.graphql"
-$templatePath = Join-Path $scriptDir "dist"
+$templatePath = Join-Path $scriptDir "nodejs/dist"
 
 Write-Output "Schema Path:   $schemaPath"
 Write-Output "Output Path:   $outPath"
