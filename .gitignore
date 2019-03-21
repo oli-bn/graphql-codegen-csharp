@@ -10,3 +10,7 @@ yarn-error.log
 /samples/GitHub/output/OutTest/GitHubSchema.cs
 "site/" 
 /package-lock.json
+/nodejs/typings
+/nodejs/dist
+/nodejs/node_modules
+/nodejs/coverage
