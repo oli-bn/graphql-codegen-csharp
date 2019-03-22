@@ -13,8 +13,6 @@ Write-Output "Node: $nodeVersion, Npm: $npmVersion, Yarn: $yarnVersion"
 Write-Output "-------------------------------------------"
 Write-Output "Build project"
 
-<#
-
 try{
     $a = yarn install --non-interactive 
 }
@@ -36,11 +34,9 @@ Write-Output "Template Path: $templatePath"
 
 try{
     Write-Output "yarn gql-gen --schema $schemaPath --template $templatePath --out $outPath $queryPath --non-interactive"
-
-    $a = yarn gql-gen --schema $schemaPath --template $templatePath --out $outPath $queryPath --non-interactive 
+    yarn gql-gen --schema $schemaPath --template $templatePath --out $outPath $queryPath --non-interactive 
 }
 catch{
 }
 
 Write-Output "-------------------------------------------"
-#>
