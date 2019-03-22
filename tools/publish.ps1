@@ -2,13 +2,11 @@
 
 $scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
 
-cd $scriptDir
-
-cd $scriptDir
+cd (Join-Path $scriptDir "nodejs")
 
 $version = $env:APPVEYOR_BUILD_VERSION
 
-$packagePath = Join-Path $scriptDir "package.json"
+$packagePath = Join-Path $scriptDir "nodejs/package.json"
 
 $packageJson = ConvertFrom-Json (gc $packagePath -Raw -Encoding Ascii) 
 
