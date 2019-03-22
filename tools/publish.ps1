@@ -4,14 +4,9 @@ $scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definiti
 
 cd (Join-Path $scriptDir "nodejs")
 
-$version = $env:APPVEYOR_BUILD_VERSION
-
 $packagePath = Join-Path $scriptDir "package.json"
-
-$packageJson = ConvertFrom-Json (gc $packagePath -Raw -Encoding Ascii) 
-
+$version = $env:APPVEYOR_BUILD_VERSION
 $isAppVeyor = $true
-
 
 if([string]::IsNullOrWhiteSpace($version)){
     $v = [Version]::Parse($packageJson.version)    
@@ -19,17 +14,28 @@ if([string]::IsNullOrWhiteSpace($version)){
     $isAppVeyor = $false
 }
 
-$packageJson.version = $version
+$branch = $env:APPVEYOR_REPO_BRANCH
+$buildFolder = $ENV:APPVEYOR_BUILD_FOLDER
 
+Write-Output "packagePath: $packagePath, version: $version, branch: $branch, buildFolder: $buildFolder"
+
+if(!(Test-Path $packagePath)) 
+{
+	Write-Output "Missing file: $packagePath"
+	Exit 1
+}
+
+$packageJson = ConvertFrom-Json (gc $packagePath -Raw -Encoding Ascii) 
+$packageJson.version = $version
 $jsonText = ConvertTo-Json -InputObject $packageJson 
 
 $jsonText | Out-File $packagePath -Encoding ascii
 
 if($isAppVeyor){
 
-    if($env:APPVEYOR_REPO_BRANCH -eq "master"){
+    if($branch  -eq "master"){
 
-        $npmrcPath = Join-Path $ENV:APPVEYOR_BUILD_FOLDER ".npmrc"
+        $npmrcPath = Join-Path $buildFolder  ".npmrc"
     
         Write-Output "npmrc path: $npmrcPath"
     
