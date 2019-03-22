@@ -14,12 +14,13 @@ install:
   - ps: .\tools\build.ps1
 
 before_build:
-  - nuget restore .\samples\GitHub\output\OutTest.sln
+  - ps ls
+  - nuget restore samples\GitHub\output\OutTest.sln
 
 test: off
 
 build:
-  project: .\samples\GitHub\output\OutTest.sln
+  project: samples\GitHub\output\OutTest.sln
 
 after_build:
   - ps: .\tools\publish.ps1
