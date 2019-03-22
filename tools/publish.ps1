@@ -16,10 +16,9 @@ if([string]::IsNullOrWhiteSpace($version)){
 }
 
 $branch = $env:APPVEYOR_REPO_BRANCH
-$buildFolder = $ENV:APPVEYOR_BUILD_FOLDER
 
 Write-Output "-------------------------------------------"
-Write-Output "nodeProjDir: $nodeProjDir, packagePath: $packagePath, version: $version, branch: $branch, buildFolder: $buildFolder"
+Write-Output "nodeProjDir: $nodeProjDir, packagePath: $packagePath, version: $version, branch: $branch"
 Write-Output "-------------------------------------------"
 
 if(!(Test-Path $packagePath)) 
@@ -38,10 +37,12 @@ if($isAppVeyor){
 
     if($branch  -eq "master"){
 
-        $npmrcPath = Join-Path $buildFolder  ".npmrc"
-    
+        $npmrcPath = Join-Path $nodeProjDir  ".npmrc"
+		
+		Write-Output "-------------------------------------------"
         Write-Output "npmrc path: $npmrcPath"
-    
+		Write-Output "-------------------------------------------"
+		
         if((Test-Path $npmrcPath)) {
             Write-Output "removing old .npmrc"
             Remove-Item $npmrcPath
