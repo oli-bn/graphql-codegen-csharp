@@ -1,11 +1,8 @@
 #$ErrorActionPreference = "Stop"
 
-$scriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
+$scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
 
-$nodeDir = Join-Path (Split-Path -Path $scriptDir -Parent) "nodejs"
-
-cd $nodeDir
-
+cd (Join-Path $scriptDir "nodejs")
 
 $nodeVersion = node -v
 $npmVersion = npm -v
@@ -25,7 +22,6 @@ yarn build
 Write-Output "-------------------------------------------"
 Write-Output "Running Generator"
 
-
 $schemaPath = Join-Path $scriptDir "samples/GitHub/input/GitHubSchema.json"
 $outPath = Join-Path $scriptDir "samples/GitHub/output/OutTest/GitHubSchema.cs"
 $queryPath = Join-Path  $scriptDir "samples/GitHub/input/*.graphql"
@@ -44,6 +40,3 @@ catch{
 }
 
 Write-Output "-------------------------------------------"
-
-cd $scriptDir
-
