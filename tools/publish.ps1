@@ -1,8 +1,10 @@
 #$ErrorActionPreference = "Stop"
 
-$scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
+$scriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 
-cd (Join-Path $scriptDir "nodejs")
+$nodeDir = Join-Path (Split-Path -Path $scriptDir -Parent) "nodejs"
+
+cd $nodeDir
 
 $version = $env:APPVEYOR_BUILD_VERSION
 
@@ -48,3 +50,6 @@ if($isAppVeyor){
 else{       
     npm publish
 }
+
+
+cd $scriptDir
