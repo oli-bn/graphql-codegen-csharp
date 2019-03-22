@@ -14,7 +14,7 @@ install:
   - ps: .\tools\build.ps1
 
 before_build:
-  - nuget restore samples\GitHub\output\OutTest.sln
+  - nuget restore .\samples\GitHub\output\OutTest.sln
 
 test: off
 
