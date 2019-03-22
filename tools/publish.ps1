@@ -1,10 +1,11 @@
 #$ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
+$nodeProjDir = Join-Path $scriptDir "nodejs"
 
-cd (Join-Path $scriptDir "nodejs")
+cd $nodeProjDir
 
-$packagePath = Join-Path $scriptDir "package.json"
+$packagePath = Join-Path $nodeProjDir "package.json"
 $version = $env:APPVEYOR_BUILD_VERSION
 $isAppVeyor = $true
 
@@ -17,7 +18,9 @@ if([string]::IsNullOrWhiteSpace($version)){
 $branch = $env:APPVEYOR_REPO_BRANCH
 $buildFolder = $ENV:APPVEYOR_BUILD_FOLDER
 
-Write-Output "packagePath: $packagePath, version: $version, branch: $branch, buildFolder: $buildFolder"
+Write-Output "-------------------------------------------"
+Write-Output "nodeProjDir: $nodeProjDir, packagePath: $packagePath, version: $version, branch: $branch, buildFolder: $buildFolder"
+Write-Output "-------------------------------------------"
 
 if(!(Test-Path $packagePath)) 
 {
