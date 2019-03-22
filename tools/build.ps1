@@ -12,6 +12,9 @@ Write-Output "-------------------------------------------"
 Write-Output "Node: $nodeVersion, Npm: $npmVersion, Yarn: $yarnVersion"
 Write-Output "-------------------------------------------"
 Write-Output "Build project"
+
+<#
+
 try{
     $a = yarn install --non-interactive 
 }
@@ -40,3 +43,4 @@ catch{
 }
 
 Write-Output "-------------------------------------------"
+#>
