@@ -26,9 +26,6 @@ build:
 
 after_build:
   - ps: .\tools\publish.ps1
-
-before_deploy:
-  - ps: .\tools\createNupkg.ps1
   
 deploy:
   provider: NuGet
