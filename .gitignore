@@ -14,3 +14,6 @@ yarn-error.log
 /nodejs/dist
 /nodejs/node_modules
 /nodejs/coverage
+/csharp/obj
+/csharp/.vs
+/csharp/bin

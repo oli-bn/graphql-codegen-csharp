@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Agoda.CodeGen.GraphQL", "Agoda.CodeGen.GraphQL.csproj", "{BD8EF856-87CD-4A7E-80C5-720799B72D60}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD8EF856-87CD-4A7E-80C5-720799B72D60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD8EF856-87CD-4A7E-80C5-720799B72D60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD8EF856-87CD-4A7E-80C5-720799B72D60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD8EF856-87CD-4A7E-80C5-720799B72D60}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {715247C6-38FF-42F6-99EC-5F69777F0B11}
+	EndGlobalSection
+EndGlobal
