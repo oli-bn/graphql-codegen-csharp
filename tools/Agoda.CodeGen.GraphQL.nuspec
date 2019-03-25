@@ -9,13 +9,13 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Agoda.CodeGen.GraphQL</description>
   <dependencies>    
-    <dependency id="Newtonsoft.Json" version="9.0.1" />
+    <dependency id="Newtonsoft.Json" version="10.0.2" />
   </dependencies>
   </metadata>
   <files>  
-  <file src="bin\Debug\Net45\Agoda.Config.Consul.dll" target="lib\Net45" />
-  <file src="bin\Debug\netstandard2.0\Agoda.Config.Consul.dll" target="lib\netstandard2.0" />
-  <file src="bin\Debug\Net45\Agoda.Config.Consul.pdb" target="lib\Net45" />
-  <file src="bin\Debug\netstandard2.0\Agoda.Config.Consul.pdb" target="lib\netstandard2.0" />
+  <file src="..\csharp\bin\Debug\Net45\Agoda.Config.Consul.dll" target="lib\Net45" />
+  <file src="..\csharp\bin\Debug\netstandard2.0\Agoda.Config.Consul.dll" target="lib\netstandard2.0" />
+  <file src="..\csharp\bin\Debug\Net45\Agoda.Config.Consul.pdb" target="lib\Net45" />
+  <file src="..\csharp\bin\Debug\netstandard2.0\Agoda.Config.Consul.pdb" target="lib\netstandard2.0" />
   </files>
 </package>

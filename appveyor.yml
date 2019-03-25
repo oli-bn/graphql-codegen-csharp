@@ -26,3 +26,10 @@ build:
 
 after_build:
   - ps: .\tools\publish.ps1
+  
+deploy:
+  provider: NuGet
+  api_key:
+    secure: VubFf6ZLPQHaPO9vRTftkmJWYFuGUxWwm6+gcb8KndKNgOXmNY9KjH3E+oK9VJ2V
+  skip_symbols: false
+  artifact: .\tools\Agoda.CodeGen.GraphQL.nuspec
