@@ -19,7 +19,10 @@ before_build:
 
 test: off
 
+image: Visual Studio 2017
+
 build:
+  project: csharp\Agoda.CodeGen.GraphQL.sln
   project: samples\GitHub\output\OutTest.sln
 
 after_build:
