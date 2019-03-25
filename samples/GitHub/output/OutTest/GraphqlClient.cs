@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Agoda.CodeGen.GraphQL;
 using Generated;
 
 namespace OutTest
