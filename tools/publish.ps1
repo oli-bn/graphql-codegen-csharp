@@ -9,7 +9,7 @@ Write-Output "-------------------------------------------"
 
 ls $binPath 
 
-$binPath = Join-Path $scriptDir "Debug"
+$binPath = Join-Path $binPath "Debug"
 
 Write-Output "-------------------------------------------"
 
