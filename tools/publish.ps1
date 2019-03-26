@@ -16,10 +16,6 @@ if(!$branch)
 	Exit 1
 }
 
-if($branch -ne "master") {
-    $version = "$version-alpha"
-}
-
 $scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
 $nodeProjDir = Join-Path $scriptDir "nodejs"
 $toolsPath = Join-Path $scriptDir "tools"
@@ -30,6 +26,11 @@ cd $toolsPath
 $nuspecPath = Join-Path $toolsPath "Agoda.CodeGen.GraphQL.nuspec"
 
 nuget pack $nuspecPath -Version $version
+
+ls $nuspecPath -Filter "*.nuspec" | % {
+    Write-Output $_.FullName
+    Copy-Item -Path $_.FullName -Destination 
+}
 
 cd $nodeProjDir
 
