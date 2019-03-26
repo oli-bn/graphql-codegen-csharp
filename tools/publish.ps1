@@ -29,8 +29,6 @@ cd $toolsPath
 
 $nuspecPath = Join-Path $toolsPath "Agoda.CodeGen.GraphQL.nuspec"
 
-$version = $env:APPVEYOR_BUILD_VERSION
-
 nuget pack $nuspecPath -Version $version
 
 cd $nodeProjDir
