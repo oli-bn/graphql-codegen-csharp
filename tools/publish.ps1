@@ -3,17 +3,19 @@
 $scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
 $nodeProjDir = Join-Path $scriptDir "nodejs"
 $toolsPath = Join-Path $scriptDir "tools"
-$binPath = Join-Path $scriptDir "csharp\bin"
+$binPath = Join-Path $scriptDir "csharp\bin\Debug"
 
 Write-Output "-------------------------------------------"
 
-ls $binPath 
+$n = Join-Path $binPath "net45"
 
-$binPath = Join-Path $binPath "Debug"
+ls $n
 
 Write-Output "-------------------------------------------"
 
-ls $binPath 
+$n = Join-Path $binPath "netstandard2.0"
+
+ls $n
 
 Write-Output "-------------------------------------------"
 
