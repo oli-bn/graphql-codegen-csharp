@@ -54,5 +54,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\csharp\Agoda.CodeGen.GraphQL.csproj">
+      <Project>{99f0ea92-6fae-40fc-98fc-a485ab66d829}</Project>
+      <Name>Agoda.CodeGen.GraphQL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

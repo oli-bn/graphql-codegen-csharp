@@ -19,8 +19,21 @@ before_build:
 
 test: off
 
+image: Visual Studio 2017
+
 build:
-  project: samples\GitHub\output\OutTest.sln
+  project: csharp\Agoda.CodeGen.GraphQL.sln
 
 after_build:
   - ps: .\tools\publish.ps1
+
+artifacts:
+  - path: '**\Agoda.CodeGen.GraphQL*.nupkg'
+    name: NugetPackage
+  
+deploy:
+  provider: NuGet
+  api_key:
+    secure: VubFf6ZLPQHaPO9vRTftkmJWYFuGUxWwm6+gcb8KndKNgOXmNY9KjH3E+oK9VJ2V
+  skip_symbols: true
+  artifact: /.*\.nupkg/
