@@ -13,9 +13,9 @@
   </dependencies>
   </metadata>
   <files>  
-  <file src="..\csharp\bin\Debug\net45\Agoda.Config.Consul.dll" target="lib\Net45" />
-  <file src="..\csharp\bin\Debug\netstandard2.0\Agoda.Config.Consul.dll" target="lib\netstandard2.0" />
-  <file src="..\csharp\bin\Debug\net45\Agoda.Config.Consul.pdb" target="lib\Net45" />
-  <file src="..\csharp\bin\Debug\netstandard2.0\Agoda.Config.Consul.pdb" target="lib\netstandard2.0" />
+  <file src="..\csharp\bin\Debug\net45\Agoda.CodeGen.GraphQL.dll" target="lib\Net45" />
+  <file src="..\csharp\bin\Debug\netstandard2.0\Agoda.CodeGen.GraphQL.dll" target="lib\netstandard2.0" />
+  <file src="..\csharp\bin\Debug\net45\Agoda.CodeGen.GraphQL.pdb" target="lib\Net45" />
+  <file src="..\csharp\bin\Debug\netstandard2.0\Agoda.CodeGen.GraphQL.pdb" target="lib\netstandard2.0" />
   </files>
 </package>
