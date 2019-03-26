@@ -1,23 +1,29 @@
 #$ErrorActionPreference = "Stop"
 
+$version = $env:APPVEYOR_BUILD_VERSION
+
+if(!$version) 
+{
+	Write-Output "Missing version: $version"
+	Exit 1
+}
+
+$branch = $env:APPVEYOR_REPO_BRANCH
+
+if(!$branch) 
+{
+	Write-Output "Missing branch: $branch"
+	Exit 1
+}
+
+if($branch -ne "master") {
+    $version = "$version-alpha"
+}
+
 $scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
 $nodeProjDir = Join-Path $scriptDir "nodejs"
 $toolsPath = Join-Path $scriptDir "tools"
 $binPath = Join-Path $scriptDir "csharp\bin\Debug"
-
-Write-Output "-------------------------------------------"
-
-$n = Join-Path $binPath "net45"
-
-ls $n
-
-Write-Output "-------------------------------------------"
-
-$n = Join-Path $binPath "netstandard2.0"
-
-ls $n
-
-Write-Output "-------------------------------------------"
 
 cd $toolsPath
 
@@ -25,21 +31,11 @@ $nuspecPath = Join-Path $toolsPath "Agoda.CodeGen.GraphQL.nuspec"
 
 $version = $env:APPVEYOR_BUILD_VERSION
 
-nuget pack $nuspecPath -Version "$version-alpha"
+nuget pack $nuspecPath -Version $version
 
 cd $nodeProjDir
 
 $packagePath = Join-Path $nodeProjDir "package.json"
-$version = $env:APPVEYOR_BUILD_VERSION
-$isAppVeyor = $true
-
-if([string]::IsNullOrWhiteSpace($version)){
-    $v = [Version]::Parse($packageJson.version)    
-    $version = "$($v.Major).$($v.Minor).$($v.Build + 1)"
-    $isAppVeyor = $false
-}
-
-$branch = $env:APPVEYOR_REPO_BRANCH
 
 Write-Output "-------------------------------------------"
 Write-Output "nodeProjDir: $nodeProjDir, packagePath: $packagePath, version: $version, branch: $branch"
@@ -57,28 +53,20 @@ $jsonText = ConvertTo-Json -InputObject $packageJson
 
 $jsonText | Out-File $packagePath -Encoding ascii
 
-if($isAppVeyor){
-
-    if($branch  -eq "master"){
-
-        $npmrcPath = Join-Path $nodeProjDir  ".npmrc"
+$npmrcPath = Join-Path $nodeProjDir  ".npmrc"
 		
-		Write-Output "-------------------------------------------"
-        Write-Output "npmrc path: $npmrcPath"
-		Write-Output "-------------------------------------------"
+Write-Output "-------------------------------------------"
+Write-Output "npmrc path: $npmrcPath"
+Write-Output "-------------------------------------------"
 		
-        if((Test-Path $npmrcPath)) {
-            Write-Output "removing old .npmrc"
-            Remove-Item $npmrcPath
-        }
-
-        $auth = "//registry.npmjs.org/:_authToken=`$`{NPM_TOKEN`}"
-
-        $auth | Out-File $npmrcPath -Encoding UTF8
-        iex "npm pack"
-        iex "npm publish"
-    }
+if((Test-Path $npmrcPath)) {
+    Write-Output "removing old .npmrc"
+    Remove-Item $npmrcPath
 }
-else{       
-    npm publish
-}
+
+$auth = "//registry.npmjs.org/:_authToken=`$`{NPM_TOKEN`}"
+
+$auth | Out-File $npmrcPath -Encoding UTF8
+iex "npm pack"
+iex "npm publish"
+    
