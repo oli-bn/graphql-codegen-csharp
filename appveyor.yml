@@ -32,4 +32,4 @@ deploy:
   api_key:
     secure: VubFf6ZLPQHaPO9vRTftkmJWYFuGUxWwm6+gcb8KndKNgOXmNY9KjH3E+oK9VJ2V
   skip_symbols: true
-  artifact: /\\\.tools\\\*\.nupkg/
+  artifact: /\\tools\\Agoda.CodeGen.GraphQL.*\.nupkg/
