@@ -28,7 +28,7 @@ after_build:
   - ps: .\tools\publish.ps1
 
 artifacts:
-  - path: '**\*.nupkg'
+  - path: '**\Agoda.CodeGen.GraphQL*.nupkg'
     name: NugetPackage
   
 deploy:
