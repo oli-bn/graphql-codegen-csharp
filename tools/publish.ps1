@@ -3,6 +3,19 @@
 $scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
 $nodeProjDir = Join-Path $scriptDir "nodejs"
 $toolsPath = Join-Path $scriptDir "tools"
+$binPath = Join-Path $scriptDir "csharp\bin"
+
+Write-Output "-------------------------------------------"
+
+ls $binPath 
+
+$binPath = Join-Path $scriptDir "Debug"
+
+Write-Output "-------------------------------------------"
+
+ls $binPath 
+
+Write-Output "-------------------------------------------"
 
 cd $toolsPath
 
