@@ -16,6 +16,12 @@ if(!$branch)
 	Exit 1
 }
 
+if($branch -ne "master") 
+{
+    $version = "$version-alpha"
+}
+
+
 $scriptDir = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) -Parent
 $nodeProjDir = Join-Path $scriptDir "nodejs"
 $toolsPath = Join-Path $scriptDir "tools"
