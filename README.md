@@ -1,4 +1,4 @@
-# CSharp Generator for Queries
+# CSharp Generator for Operations (Query/Mutation)
 
 | Type | Stat |
 |--------|--------|
