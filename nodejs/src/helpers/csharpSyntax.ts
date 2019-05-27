@@ -58,7 +58,7 @@ export function asArgumentList(variables: Variable[], options: any): string {
         }
         for(let i: number = 0; i < variables.length; i++) {
             var variable: Variable = variables[i];
-            var typeName: string = getType(variable, options) || "object";
+            var typeName: string = getType(variable, false, options) || "object";
             list += `${typeName} ${camelCase(variable.name)}`;
             if(i < variables.length - 1) {
                 list += ", ";
@@ -162,14 +162,21 @@ export function converterIfNeeded(variable: Variable, options: any): string {
     }
 }
 
-export function getType(type: any, options: any): string {
+export function getType(type: any, asInterface: boolean, options: any): string {
     try {
         if (!type) {
             return "object";
         }
 
         const typeInfo: ITypeInfo = getTypeInfo(type, options);
-        const typeName: string = typeInfo.isPascalCase ? toBetterPascalCase(typeInfo.name) : typeInfo.name;
+        var typeName: string = typeInfo.name;
+
+        if(typeInfo.isPascalCase) {
+            typeName = toBetterPascalCase(typeInfo.name);
+            if(asInterface) {
+                typeName = `I${typeName}`;
+            }
+        }
 
         if (typeInfo.isArray) {
             return typeInfo.isNullable ? `List<${typeName}?>` : `List<${typeName}>`;

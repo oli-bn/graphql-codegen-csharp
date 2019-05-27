@@ -2,7 +2,6 @@
 
 {{#each operations }}
 
-{{ log "operation: " (toBetterPascalCase name) level="debug"}}
 #region {{ toBetterPascalCase name }} 
 
 namespace Generated.{{ toBetterPascalCase name }} 
@@ -21,7 +20,7 @@ namespace Generated.{{ toBetterPascalCase name }}
         }
         
         {{#each variables}}       
-        public {{{ convertedType this }}} {{ toBetterPascalCase name }} { get; }
+        public {{{ convertedType this false }}} {{ toBetterPascalCase name }} { get; }
         {{/each}}
         protected override string QueryText => _query;
 
@@ -39,14 +38,17 @@ namespace Generated.{{ toBetterPascalCase name }}
       {{/if}}  
     }
 
-    {{#each innerModels }}
-    {{ log "    inner model: " (getInnerModelName this) level="debug"}}
+    {{#each innerModels }}   
     {{ toCsharpComment "Inner Model" }} 
-    public sealed class {{ getInnerModelName this }} 
+    public sealed class {{ getInnerModelName this }}: I{{ toBetterPascalCase schemaBaseType }}
     {
         {{#if hasFields}}     
         {{> selectionSet fields }}
         {{/if}}
+
+        {{#each fields}}      
+        Option<{{{ convertedType this false }}}> I{{ toBetterPascalCase ../schemaBaseType }}.{{toBetterPascalCase name }} => Option.Some({{toBetterPascalCase name }});
+        {{/each}}
     }
     {{/each}}
 }

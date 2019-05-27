@@ -1,14 +1,31 @@
 using System;
+using Optional;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Agoda.CodeGen.GraphQL;
 
+namespace Generated
+{
+
+#region types
+
+{{#each types }}   
+    public interface I{{ toBetterPascalCase name }}
+    {
+{{#each fields}}           
+      Option<{{{ convertedType this true }}}> {{toBetterPascalCase name }} { get; } 
+{{/each}}
+    }
+{{/each}}
+}
+
+#endregion
+
 #region input types
 
 namespace Generated
 {
-
     // scalars if used 
 {{#each (getValueTypeIfUsed scalars)}}
     {{~> structs }}
