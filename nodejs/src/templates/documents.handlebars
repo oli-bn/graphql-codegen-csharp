@@ -33,22 +33,18 @@ namespace Generated.{{ toBetterPascalCase name }}
 
     public sealed class Data
     {
-      {{#if hasFields}}    
-        {{> selectionSet fields }}
-      {{/if}}  
+{{#each fields}}  
+      {{ toCsharpComment description }}
+      [JsonProperty("{{ name }}")]
+      public {{{ convertedType this false }}} {{ toBetterPascalCase name }} { get; set; }
+{{/each}} 
     }
 
     {{#each innerModels }}   
     {{ toCsharpComment "Inner Model" }} 
     public sealed class {{ getInnerModelName this }}: I{{ toBetterPascalCase schemaBaseType }}
-    {
-        {{#if hasFields}}     
-        {{> selectionSet fields }}
-        {{/if}}
-
-        {{#each fields}}      
-        Option<{{{ convertedType this false }}}> I{{ toBetterPascalCase ../schemaBaseType }}.{{toBetterPascalCase name }} => Option.Some({{toBetterPascalCase name }});
-        {{/each}}
+    {        
+        {{> selectionSet (getSelectionSetProperties this ../../types ) }}
     }
     {{/each}}
 }

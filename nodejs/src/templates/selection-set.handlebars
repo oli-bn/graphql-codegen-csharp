@@ -1,5 +1,17 @@
 {{#each this}}
-{{ toCsharpComment description }}
-[JsonProperty("{{ name }}")]
-public {{{ convertedType this false }}} {{ toBetterPascalCase name }} { get; set; }
+{{#if isSelected}}
+public {{{ typeName }}} {{ toBetterPascalCase name }} { get; set; }
+{{/if}}
+{{/each}}
+
+{{#each this}}
+{{#if isSelected}}
+{{#if isArray}}
+Option<{{{ interfaceTypeName }}}> I{{ toBetterPascalCase schemaBaseTypeName }}.{{ toBetterPascalCase name }} => Option.Some({{ toBetterPascalCase name }}.Cast<{{{ interfaceTypeName }}}>().ToList());
+{{else}}
+Option<{{{ interfaceTypeName }}}> I{{ toBetterPascalCase schemaBaseTypeName }}.{{ toBetterPascalCase name }} => Option.Some<{{{ interfaceTypeName }}}>({{ toBetterPascalCase name }});
+{{/if}}
+{{else}}
+Option<{{{ interfaceTypeName }}}> I{{ toBetterPascalCase schemaBaseTypeName }}.{{ toBetterPascalCase name }} => Option.None<{{{ interfaceTypeName }}}>();
+{{/if}}
 {{/each}}

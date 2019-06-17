@@ -16,13 +16,10 @@ import {
   asQueryUnescapedText,
   asArgumentList,
   converterIfNeeded,
-  asJsonString,
-  getTypeIfUsed,
-  getValueTypeIfUsed,
-  getEnumTypesIfUsed,
   toBetterPascalCase,
-  getInputTypeIfUsed,
   getInnerModelName,
+  getSelectionSetProperties,
+  getValueTypeIfUsed
   } from "../helpers/csharpSyntax";
 
 class CsharpGeneratorConfig implements  GeneratorConfig {
@@ -49,13 +46,10 @@ class CsharpGeneratorConfig implements  GeneratorConfig {
       toCsharpComment: toCsharpComment,
       asQueryUnescapedText: asQueryUnescapedText,
       asArgumentList: asArgumentList,
-      asJsonString: asJsonString,
-      getTypeIfUsed: getTypeIfUsed,
-      getValueTypeIfUsed: getValueTypeIfUsed,
-      getInputTypeIfUsed: getInputTypeIfUsed,
-      getEnumTypesIfUsed: getEnumTypesIfUsed,
       converterIfNeeded: converterIfNeeded,
       toBetterPascalCase: toBetterPascalCase,
+      getSelectionSetProperties: getSelectionSetProperties,
+      getValueTypeIfUsed: getValueTypeIfUsed,
       getInnerModelName,
       log: (... args: any[]): void => {
         if(args && args.length > 0) {
