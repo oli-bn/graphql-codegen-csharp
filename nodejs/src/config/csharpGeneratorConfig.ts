@@ -19,7 +19,8 @@ import {
   toBetterPascalCase,
   getInnerModelName,
   getSelectionSetProperties,
-  getValueTypeIfUsed
+  getValueTypeIfUsed,
+  getNonOperationTypes
   } from "../helpers/csharpSyntax";
 
 class CsharpGeneratorConfig implements  GeneratorConfig {
@@ -50,6 +51,7 @@ class CsharpGeneratorConfig implements  GeneratorConfig {
       toBetterPascalCase: toBetterPascalCase,
       getSelectionSetProperties: getSelectionSetProperties,
       getValueTypeIfUsed: getValueTypeIfUsed,
+      getNonOperationTypes: getNonOperationTypes,
       getInnerModelName,
       log: (... args: any[]): void => {
         if(args && args.length > 0) {

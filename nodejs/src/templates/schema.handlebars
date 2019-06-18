@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Agoda.CodeGen.GraphQL;
+using System.Linq;
 
 namespace Generated
 {
 
 #region types
 
-{{#each types }}   
+{{#each (getNonOperationTypes types) }}   
     public interface I{{ toBetterPascalCase name }}
     {
 {{#each fields}}           

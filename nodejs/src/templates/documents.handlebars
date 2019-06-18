@@ -36,13 +36,13 @@ namespace Generated.{{ toBetterPascalCase name }}
 {{#each fields}}  
       {{ toCsharpComment description }}
       [JsonProperty("{{ name }}")]
-      public {{{ convertedType this false }}} {{ toBetterPascalCase name }} { get; set; }
+      public {{{ getInnerModelName this ../innerModels }}} {{ toBetterPascalCase name }} { get; set; }
 {{/each}} 
     }
 
     {{#each innerModels }}   
     {{ toCsharpComment "Inner Model" }} 
-    public sealed class {{ getInnerModelName this }}: I{{ toBetterPascalCase schemaBaseType }}
+    public sealed class {{ getInnerModelName this ../innerModels }}: I{{ toBetterPascalCase schemaBaseType }}
     {        
         {{> selectionSet (getSelectionSetProperties this ../../types ) }}
     }

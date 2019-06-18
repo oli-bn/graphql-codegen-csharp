@@ -7,7 +7,7 @@ public {{{ typeName }}} {{ toBetterPascalCase name }} { get; set; }
 {{#each this}}
 {{#if isSelected}}
 {{#if isArray}}
-Option<{{{ interfaceTypeName }}}> I{{ toBetterPascalCase schemaBaseTypeName }}.{{ toBetterPascalCase name }} => Option.Some({{ toBetterPascalCase name }}.Cast<{{{ interfaceTypeName }}}>().ToList());
+Option<{{{ interfaceTypeName }}}> I{{ toBetterPascalCase schemaBaseTypeName }}.{{ toBetterPascalCase name }} => Option.Some({{ toBetterPascalCase name }}.Select(i => ({{{ itemName }}})i));
 {{else}}
 Option<{{{ interfaceTypeName }}}> I{{ toBetterPascalCase schemaBaseTypeName }}.{{ toBetterPascalCase name }} => Option.Some<{{{ interfaceTypeName }}}>({{ toBetterPascalCase name }});
 {{/if}}

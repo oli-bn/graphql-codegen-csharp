@@ -3,7 +3,7 @@ import { SafeString } from "handlebars";
 import * as pascalcase from "pascalcase";
 // tslint:disable-next-line:typedef
 import * as camelCase from "camelcase";
-import { Variable, Type, } from "graphql-codegen-core";
+import { Variable, Type, Field, } from "graphql-codegen-core";
 import { ISelectionSetWithOptions } from "../models/ISelectionSetWithOptions";
 import { ITypeInfo } from "../models/ITypeInfo";
 import { scalarTypeMapping } from "../config/csharpGeneratorConfig";
@@ -74,8 +74,20 @@ export function asArgumentList(variables: Variable[], options: any): string {
     }
 }
 
-export function getInnerModelName(type: any, options: any): string {
-    return type.modelType;
+export function getInnerModelName(type: any, innerModels: any[], options: any): string {
+
+    if(type.schemaBaseType !== undefined) {
+        return toBetterPascalCase(type.schemaBaseType);
+    }
+
+    const isArray: boolean = type.isArray;
+    type = innerModels.find(m => m.modelType === type.type);
+
+    if(isArray) {
+        return `List<${toBetterPascalCase(type.schemaBaseType)}>`;
+    }
+
+    return toBetterPascalCase(type.schemaBaseType);
 }
 
 function getTypeInfo(type: any, options: any): ITypeInfo {
@@ -220,9 +232,11 @@ export function getSelectionSetProperties(innerModel: Type, types: Type[]): ISel
         }
     });
 
-    console.log(Object.values(map));
+    const selections: ISelectionSetWithOptions[] = Object.values(map);
 
-    return Object.values(map);
+    selections.forEach(s => s.itemName = s.interfaceTypeName.replace("IEnumerable<", "").replace(">", ""));
+
+    return selections;
 }
 
 export function getValueTypeIfUsed(structs: Type[]): Type[] {
@@ -240,4 +254,8 @@ export function getValueTypeIfUsed(structs: Type[]): Type[] {
         logger.error("getValueTypeIfUsed", e);
         throw e;
     }
+}
+
+export function getNonOperationTypes(types: Type[]): Type[] {
+    return types.filter(t => t.name !== "Query" && t.name !== "Mutation");
 }
