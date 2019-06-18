@@ -204,29 +204,23 @@ export function getSelectionSetProperties(innerModel: Type, types: Type[]): ISel
     const schemaBaseType: Type = typeLookup[schemaBaseTypeName];
     var map: { [email: string]: ISelectionSetWithOptions; } = { };
 
-    schemaBaseType.fields.forEach(f => {
+    const add: any = (f: Field, isSelected: boolean, isInSchema: boolean) => {
         map[f.name] = {
             isArray: f.isArray,
             schemaBaseTypeName: schemaBaseTypeName,
             name: f.name,
             typeName: getType(f, false, null),
             interfaceTypeName: getType(f, true, null),
-            isSelected: false,
-            isInSchema: true
+            isSelected: isSelected,
+            isInSchema: isInSchema
         } as ISelectionSetWithOptions;
-    });
+    };
+
+    schemaBaseType.fields.forEach(f => { add(f, false, true); });
 
     innerModel.fields.forEach(f => {
         if(map[f.name] === undefined) {
-            map[f.name] = {
-                isArray: f.isArray,
-                schemaBaseTypeName: schemaBaseTypeName,
-                name: f.name,
-                typeName: getType(f, false, null),
-                interfaceTypeName: getType(f, true, null),
-                isSelected: true,
-                isInSchema: false
-            } as ISelectionSetWithOptions;
+            add(f, true, false);
         } else {
             map[f.name].isSelected = true;
         }
