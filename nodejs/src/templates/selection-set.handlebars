@@ -1,5 +1,6 @@
 {{#each this}}
 {{#if isSelected}}
+[JsonProperty("{{ name }}")]
 public {{{ typeName }}} {{ toBetterPascalCase name }} { get; set; }
 {{/if}}
 {{/each}}
