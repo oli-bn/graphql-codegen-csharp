@@ -6,6 +6,7 @@ const primitivesMapping: PrimitiveTypesMapping = {
     Float: "float",
     Boolean: "bool",
     ID: "string",
+    BigInt: "int"
   };
 
 export { PrimitiveTypesMapping, primitivesMapping };
